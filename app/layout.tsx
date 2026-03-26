@@ -6,9 +6,12 @@ import './globals.css'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Stalan L.T.D - Next-Generation Technology Solutions',
-  description: 'Engineering purposeful next-generation solutions. Advancing modern technology aligned with human potential.',
-  generator: 'v0.app',
+  title: {
+    default: 'Stalan L.T.D — Advancing Technology for Humanity',
+    template: '%s | Stalan L.T.D',
+  },
+  description: 'Stalan L.T.D is a multi-disciplinary technology firm dedicated to advancing safe and healthy technology for the development of society.',
+  keywords: ['Stalan', 'technology', 'RCD', 'SC-Static', 'drone', 'smart home', 'Nigeria', 'engineering'],
   icons: {
     icon: [
       {
@@ -19,9 +22,14 @@ export const metadata: Metadata = {
     apple: '/apple-icon.png',
   },
   openGraph: {
-    title: 'Stalan L.T.D',
-    description: 'Engineering purposeful next-generation solutions.',
     type: 'website',
+    siteName: 'Stalan L.T.D',
+    title: 'Stalan L.T.D — Advancing Technology for Humanity',
+    description: 'Multi-disciplinary technology firm building next-generation safe infrastructure.',
+    url: 'https://stalan.ltd',
+  },
+  twitter: {
+    card: 'summary_large_image',
   },
 }
 

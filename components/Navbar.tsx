@@ -17,6 +17,12 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleSkipToMain = () => {
+    const main = document.querySelector('main');
+    main?.focus();
+    main?.scrollIntoView();
+  };
+
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
@@ -26,13 +32,21 @@ export function Navbar() {
   ];
 
   return (
-    <nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-[#0A1628]/80 backdrop-blur-md border-b border-white/10'
-          : 'bg-transparent'
-      }`}
-    >
+    <>
+      <a
+        href="#main-content"
+        onClick={handleSkipToMain}
+        className="skip-to-main"
+      >
+        Skip to main content
+      </a>
+      <nav
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-[#0A1628]/80 backdrop-blur-md border-b border-white/10'
+            : 'bg-transparent'
+        }`}
+      >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -102,6 +116,7 @@ export function Navbar() {
           </motion.div>
         )}
       </div>
-    </nav>
+      </nav>
+    </>
   );
 }

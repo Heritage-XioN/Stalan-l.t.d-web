@@ -59,3 +59,36 @@ html {
     font-family: 'Inter', sans-serif;
   }
 }
+
+@layer components {
+  /* Skip to main content link */
+  .skip-to-main {
+    @apply absolute -top-10 left-0 z-50 px-4 py-2 bg-[#1A4FBF] text-white rounded-b-lg focus:top-0 transition-all;
+  }
+
+  /* Focus ring accessibility */
+  @media (prefers-reduced-motion: no-preference) {
+    *:focus-visible {
+      @apply outline-2 outline-offset-2;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      *:focus-visible {
+        @apply outline-[#00C2FF];
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      *:focus-visible {
+        @apply outline-[#1A4FBF];
+      }
+    }
+  }
+
+  /* Motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      @apply !transition-none !animate-none;
+    }
+  }
+}
