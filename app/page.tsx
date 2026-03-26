@@ -1,18 +1,14 @@
-import { Navbar } from '@/components/navbar';
-import { HeroSection } from '@/components/hero-section';
-import { InnovationsSlider } from '@/components/innovations-slider';
-import { ServicesSection } from '@/components/services-section';
-import { CTASection } from '@/components/cta-section';
-import { Footer } from '@/components/footer';
+import { Navbar } from '@/components/Navbar';
+import { HeroSection } from '@/components/HeroSection';
+import { StatsBar } from '@/components/StatsBar';
+import { Footer } from '@/components/Footer';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-[#0A1628]">
       <Navbar />
       <HeroSection />
-      <InnovationsSlider />
-      <ServicesSection />
-      <CTASection />
+      <StatsBar />
       <Footer />
     </main>
   );
