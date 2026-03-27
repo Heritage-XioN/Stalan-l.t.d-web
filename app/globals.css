@@ -1,52 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
 @theme inline {
-  --color-primary: #1A4FBF;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #0A1628;
-  --color-secondary-foreground: #ffffff;
-  --color-accent: #00C2FF;
-  --color-accent-foreground: #0A1628;
-  --color-background: #0A1628;
-  --color-foreground: #ffffff;
-  --color-card: #1a2f4f;
-  --color-card-foreground: #ffffff;
-  --color-muted: #334455;
-  --color-muted-foreground: #b0bcc8;
-  --color-border: #1a3a5f;
-  --color-input: #1a2f4f;
-  --color-ring: #00C2FF;
-  --color-light-bg: #F0F4FF;
-  --radius-default: 0.5rem;
+  --font-syne: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Light Mode */
+  --color-light-bg: #FAFAFA;
+  --color-light-surface: #FFFFFF;
+  --color-light-text: #0A0A0A;
+  --color-light-text-secondary: #555555;
+  --color-light-accent-1: #0A0A0A;
+  --color-light-accent-2: #C8F135;
+  --color-light-border: #E8E8E8;
+  
+  /* Dark Mode */
+  --color-dark-bg: #080808;
+  --color-dark-surface: #111111;
+  --color-dark-text: #F5F5F5;
+  --color-dark-text-secondary: #888888;
+  --color-dark-accent-1: #FFFFFF;
+  --color-dark-accent-2: #C8F135;
+  --color-dark-border: #222222;
+  
+  /* Semantic */
+  --color-background: #FAFAFA;
+  --color-foreground: #0A0A0A;
+  --color-accent: #C8F135;
+  --color-border: #E8E8E8;
+  --radius-default: 0px;
 }
 
 html {
   scroll-behavior: smooth;
+  @apply dark:bg-[#080808] dark:text-[#F5F5F5] bg-[#FAFAFA] text-[#0A0A0A];
 }
 
 @layer base {
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#FAFAFA] text-[#0A0A0A];
     font-family: 'Inter', sans-serif;
+  }
+  
+  body.dark {
+    @apply bg-[#080808] text-[#F5F5F5];
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', sans-serif;
+    @apply font-bold tracking-tight;
+  }
+  
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
 @layer components {
   .glass {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-lg;
+    @apply bg-white/80 backdrop-blur-xl border border-[#E8E8E8];
   }
-
+  
   .glass-dark {
-    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-lg;
+    @apply dark:bg-black/70 dark:backdrop-blur-xl dark:border-[#222222];
   }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent;
+  
+  .lime-accent {
+    @apply text-[#C8F135];
   }
-
-  .glow-accent {
-    @apply shadow-lg shadow-accent/30;
+  
+  .lime-underline {
+    @apply relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-[#C8F135] after:transition-all after:duration-300;
+  }
+  
+  /* Lime underline animation */
+  @keyframes slideUnderline {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+  
+  .animate-lime-underline {
+    animation: slideUnderline 0.8s ease-out;
   }
 }
 
