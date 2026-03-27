@@ -115,14 +115,14 @@ export function HeroSection() {
           {/* Logo Brand Mark */}
           <motion.div
             variants={itemVariants}
-            className="mb-8 flex justify-center"
+            className="mb-6 sm:mb-8 flex justify-center"
           >
             <motion.div
-              animate={{ y: [0, -10, 0] }}
+              animate={{ y: [0, -8, 0] }}
               transition={{ duration: 3, repeat: Infinity }}
-              className="p-4 rounded-2xl bg-gradient-to-br from-white/10 to-cyan-400/10 border border-cyan-400/30 backdrop-blur-sm"
+              className="p-3 sm:p-4 lg:p-5 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/10 to-cyan-400/10 border border-cyan-400/30 backdrop-blur-sm"
             >
-              <Logo size="lg" animated={false} />
+              <Logo size="hero" animated={false} />
             </motion.div>
           </motion.div>
 

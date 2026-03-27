@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 interface LogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'hero';
   href?: string;
   animated?: boolean;
   className?: string;
@@ -21,6 +21,7 @@ export function Logo({
     sm: { image: 32, container: 'h-8' },
     md: { image: 40, container: 'h-10' },
     lg: { image: 56, container: 'h-14' },
+    hero: { image: 80, container: 'h-20 sm:h-28 lg:h-32' },
   };
 
   const content = (
