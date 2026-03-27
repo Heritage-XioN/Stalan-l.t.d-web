@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Linkedin } from 'lucide-react';
+import { Logo } from '@/components/Logo';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -49,6 +50,14 @@ export function Footer() {
     <footer className="bg-[#0A1628] border-t-2 border-cyan-500 text-white">
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Logo Section */}
+        <div className="mb-12 pb-8 border-b border-white/10">
+          <Logo size="md" href="/" animated={false} />
+          <p className="text-gray-400 text-sm mt-4 max-w-md">
+            Advancing technology for humanity. Multi-disciplinary engineering firm building next-generation safe infrastructure.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {Object.entries(footerSections).map(([key, section]) => (
             <div key={key}>

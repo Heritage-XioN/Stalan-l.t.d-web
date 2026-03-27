@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { Logo } from '@/components/Logo';
 
 export function HeroSection() {
   const containerVariants = {
@@ -111,6 +112,20 @@ export function HeroSection() {
           initial="hidden"
           animate="visible"
         >
+          {/* Logo Brand Mark */}
+          <motion.div
+            variants={itemVariants}
+            className="mb-8 flex justify-center"
+          >
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="p-4 rounded-2xl bg-gradient-to-br from-white/10 to-cyan-400/10 border border-cyan-400/30 backdrop-blur-sm"
+            >
+              <Logo size="lg" animated={false} />
+            </motion.div>
+          </motion.div>
+
           {/* Floating Badge */}
           <motion.div
             variants={itemVariants}

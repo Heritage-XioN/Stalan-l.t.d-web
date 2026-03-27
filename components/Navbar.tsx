@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Logo } from '@/components/Logo';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,12 +51,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1">
-            <div className="bg-white rounded-full px-3 py-1.5 flex items-center gap-2">
-              <span className="text-black font-bold text-lg">STALAN</span>
-              <span className="text-cyan-400 font-bold">L.T.D</span>
-            </div>
-          </Link>
+          <Logo size="md" href="/" animated={true} />
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
