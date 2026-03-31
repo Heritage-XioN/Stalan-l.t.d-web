@@ -1,17 +1,11 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children
 }: {
   children: React.ReactNode
 }) {
-  const cookieStore = await cookies()
-  const adminToken = cookieStore.get('ADMIN_SECRET')?.value
-
-  if (!adminToken) {
-    redirect('/admin/login')
-  }
-
+  // We moved the redirect logic to middleware.ts
   return <>{children}</>
 }

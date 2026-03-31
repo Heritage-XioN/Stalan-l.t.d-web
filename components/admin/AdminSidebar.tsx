@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, Mail, Package, Wrench, Users, Mail as NewsletterIcon, LogOut } from 'lucide-react'
+import { Bot, LayoutDashboard, Mail, Package, Wrench, Users, Mail as NewsletterIcon, LogOut } from 'lucide-react'
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/sat-bots', label: 'S.A.T Bots', icon: Bot },
   { href: '/admin/services', label: 'Services', icon: Wrench },
   { href: '/admin/team', label: 'Team', icon: Users },
   { href: '/admin/newsletter', label: 'Newsletter', icon: NewsletterIcon }

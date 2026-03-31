@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getProductBySlug, getAllProducts } from '@/lib/products';
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
+import { getProductBySlug, getAllProducts, type Product } from '@/lib/products';
+import { Navbar } from '@/components/navbar';
+import { Footer } from '@/components/footer';
 import { ArrowRight, ArrowLeft, Zap, Activity, Layers, Network, Radar, Wrench, MapPin, DollarSign, Package, Settings, Battery, Lock, Brain, ShieldCheck, Leaf, TrendingUp, RefreshCw, Link2 } from 'lucide-react';
 
 type Props = {
@@ -61,7 +61,9 @@ export default async function ProductDetailPage({ params }: Props) {
   }
 
   const relatedProducts = product.fullContent?.relatedProducts
-    ? product.fullContent.relatedProducts.map((relatedSlug) => getProductBySlug(relatedSlug)).filter(Boolean)
+    ? product.fullContent.relatedProducts
+      .map((relatedSlug) => getProductBySlug(relatedSlug))
+      .filter((relatedProduct): relatedProduct is Product => Boolean(relatedProduct))
     : [];
 
   return (

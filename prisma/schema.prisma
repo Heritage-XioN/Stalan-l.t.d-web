@@ -1,10 +1,12 @@
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model ContactMessage {
@@ -59,8 +61,19 @@ model TeamMember {
   updatedAt DateTime @updatedAt
 }
 
+model SatBotPost {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  imageUrl  String?
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model NewsletterSubscriber {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
 }
+

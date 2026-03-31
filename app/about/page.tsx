@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
+import { Navbar } from '@/components/navbar';
+import { Footer } from '@/components/footer';
 import { AboutHero } from '@/components/about/AboutHero';
 import { CompanyOverview } from '@/components/about/CompanyOverview';
 import { HistoryTimeline } from '@/components/about/HistoryTimeline';

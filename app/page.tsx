@@ -1,4 +1,4 @@
-import { Navbar } from '@/components/Navbar';
+import { Navbar } from '@/components/navbar';
 import { HeroSection } from '@/components/HeroSection';
 import { StatsBar } from '@/components/StatsBar';
 import { ProductShowcase } from '@/components/ProductShowcase';
@@ -7,7 +7,7 @@ import { ServicesTeaser } from '@/components/ServicesTeaser';
 import { AboutTeaser } from '@/components/AboutTeaser';
 import { NewsletterStrip } from '@/components/NewsletterStrip';
 import { CTASection } from '@/components/CTASection';
-import { Footer } from '@/components/Footer';
+import { Footer } from '@/components/footer';
 
 export default function Home() {
   return (

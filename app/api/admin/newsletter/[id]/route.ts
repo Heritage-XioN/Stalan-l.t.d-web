@@ -9,15 +9,16 @@ async function verifyAuth() {
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   if (!(await verifyAuth())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
+    const { id } = await params
     await prisma.newsletterSubscriber.delete({
-      where: { id: params.id }
+      where: { id }
     })
     return NextResponse.json({ success: true })
   } catch (error) {

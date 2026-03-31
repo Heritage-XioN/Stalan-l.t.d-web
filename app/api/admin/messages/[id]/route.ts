@@ -9,16 +9,17 @@ async function verifyAuth() {
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   if (!(await verifyAuth())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
+    const { id } = await params
     const body = await request.json()
     const message = await prisma.contactMessage.update({
-      where: { id: params.id },
+      where: { id },
       data: body
     })
     return NextResponse.json(message)
@@ -33,15 +34,16 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   if (!(await verifyAuth())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
+    const { id } = await params
     await prisma.contactMessage.delete({
-      where: { id: params.id }
+      where: { id }
     })
     return NextResponse.json({ success: true })
   } catch (error) {
