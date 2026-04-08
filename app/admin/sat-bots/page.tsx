@@ -13,6 +13,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import { supabase } from '@/lib/supabase'
 import { Bot, Edit2, ImagePlus, Plus, Trash2, Upload, X } from 'lucide-react'
+import type { Prisma } from '@prisma/client'
 
 interface SatBotPost {
   id: string
@@ -20,7 +21,7 @@ interface SatBotPost {
   content: string
   imageUrl: string | null
   price: number | null
-  specifications: Record<string, string> | null
+  specifications: Prisma.JsonValue | null
   published: boolean
   createdAt: string
   updatedAt: string
@@ -40,6 +41,35 @@ function getContentPreview(content: string) {
   }
 
   return `${content.slice(0, 120)}...`
+}
+
+function specificationsJsonToFormRows(
+  spec: Prisma.JsonValue | null | undefined
+): Array<{ key: string; value: string }> {
+  if (spec === null || spec === undefined) {
+    return [{ key: '', value: '' }]
+  }
+
+  if (typeof spec === 'object' && !Array.isArray(spec)) {
+    const entries = Object.entries(spec as Record<string, unknown>)
+      .map(([key, value]) => {
+        if (typeof value === 'string') {
+          return { key, value }
+        }
+        if (typeof value === 'number' || typeof value === 'boolean') {
+          return { key, value: String(value) }
+        }
+        if (value === null) {
+          return { key, value: '' }
+        }
+        return { key, value: JSON.stringify(value) }
+      })
+      .filter((row) => row.key.trim() !== '')
+
+    return entries.length > 0 ? entries : [{ key: '', value: '' }]
+  }
+
+  return [{ key: '', value: '' }]
 }
 
 export default function SatBotsPage() {
@@ -94,11 +124,8 @@ export default function SatBotsPage() {
       title: post.title,
       content: post.content,
       imageUrl: post.imageUrl ?? '',
-      price: post.price ?? '',
-      specifications:
-        post.specifications && Object.keys(post.specifications).length > 0
-          ? Object.entries(post.specifications).map(([key, value]) => ({ key, value }))
-          : [{ key: '', value: '' }]
+      price: post.price?.toString() ?? '',
+      specifications: specificationsJsonToFormRows(post.specifications)
     })
     setIsDialogOpen(true)
   }
@@ -193,11 +220,17 @@ export default function SatBotsPage() {
 
     setIsSaving(true)
 
+    const priceTrimmed = formData.price.trim()
+    const priceParsed =
+      priceTrimmed === '' ? null : parseFloat(priceTrimmed)
+    const pricePayload =
+      priceTrimmed === '' || Number.isNaN(priceParsed) ? null : priceParsed
+
     const payload = {
       title: formData.title,
       content: formData.content,
       imageUrl: formData.imageUrl,
-      price: formData.price.trim() || undefined,
+      price: pricePayload,
       specifications: formData.specifications.reduce<Record<string, string>>((acc, spec) => {
         const key = spec.key.trim()
         const value = spec.value.trim()
