@@ -1,15 +1,11 @@
+'use client';
+
 import Link from 'next/link';
-import { Metadata } from 'next';
 import { getAllProducts } from '@/lib/products';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Shield, Drone, Home, Car, Brain, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-export const metadata: Metadata = {
-  title: 'Products | Stalan L.T.D',
-  description: 'Discover Stalan L.T.D products: SC-STATIC, Drone Technology, Smart Home, Autonomous Vehicles, and AI solutions.',
-};
 
 const iconMap: { [key: string]: React.ReactNode } = {
   shield: <Shield className="w-8 h-8" />,
