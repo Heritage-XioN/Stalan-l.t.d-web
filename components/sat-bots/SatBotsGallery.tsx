@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Transition } from 'framer-motion';
 import { Bot, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -156,11 +156,9 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
           key={post.id}
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.9,
-            ease: revealEase,
-            delay: index * 0.08,
-          }}
+          transition={
+            { duration: 0.9, ease: revealEase, delay: index * 0.08 } satisfies Transition
+          }
           viewport={{ once: true, amount: 0.22 }}
           className="group overflow-hidden rounded-[2rem] border border-black/8 bg-white shadow-[0_16px_56px_rgba(10,10,10,0.05)]"
         >
@@ -169,7 +167,7 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
               <motion.div
                 initial={{ opacity: 0.4, scale: 1.08 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.1, ease: revealEase }}
+                transition={{ duration: 1.1, ease: revealEase } satisfies Transition}
                 viewport={{ once: true, amount: 0.35 }}
                 className="h-full w-full"
               >
@@ -185,7 +183,7 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
               <motion.div
                 initial={{ opacity: 0, scale: 0.94 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.9, ease: revealEase }}
+                transition={{ duration: 0.9, ease: revealEase } satisfies Transition}
                 viewport={{ once: true, amount: 0.35 }}
                 className="flex h-full w-full flex-col items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(200,241,53,0.28),_transparent_38%),linear-gradient(180deg,_#FFFFFF,_#FAFAFA)]"
               >

@@ -1,9 +1,15 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type Transition } from 'framer-motion';
 import Link from 'next/link';
 
 const revealEase = [0.16, 1, 0.3, 1] as const;
+
+const tickerTransition: Transition = {
+  duration: 18,
+  repeat: Infinity,
+  ease: 'linear',
+};
 
 const tickerItems = ['ENGINEERING', 'AUTONOMY', 'SMART SYSTEMS', 'AI', 'SAFETY'];
 
@@ -24,7 +30,7 @@ export function HeroSection() {
       <div className="w-full overflow-hidden border-y border-black/10 bg-[#C8F135] py-2.5">
         <motion.div
           animate={{ x: ['0%', '-50%'] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+          transition={tickerTransition}
           className="flex min-w-max items-center"
         >
           {tickerTrack.map((item, index) => (
@@ -44,7 +50,7 @@ export function HeroSection() {
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: revealEase, delay: 0.1 }}
+              transition={{ duration: 0.6, ease: revealEase, delay: 0.1 } satisfies Transition}
               className="mb-5 font-['JetBrains_Mono'] text-[0.68rem] uppercase tracking-[0.28em] text-[#0A0A0A]/58"
             >
               STALAN L.T.D — ENGINEERED SYSTEMS FOR REAL-WORLD HUMAN PROGRESS
@@ -53,7 +59,7 @@ export function HeroSection() {
             <motion.h1
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, ease: revealEase }}
+              transition={{ duration: 0.3, ease: revealEase } satisfies Transition}
               className="font-['Syne'] text-[clamp(2.7rem,7.6vw,7rem)] font-black uppercase leading-[0.88] tracking-[-0.05em]"
             >
               {headlineLines.map((line, index) => (
@@ -61,7 +67,9 @@ export function HeroSection() {
                   key={line}
                   initial={{ y: 44, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.75, ease: revealEase, delay: 0.18 + index * 0.12 }}
+                  transition={
+                    { duration: 0.75, ease: revealEase, delay: 0.18 + index * 0.12 } satisfies Transition
+                  }
                   className={`block ${line === 'TECHNOLOGY' ? 'text-transparent' : ''}`}
                   style={line === 'TECHNOLOGY' ? { WebkitTextStroke: '1.4px #0A0A0A' } : undefined}
                 >
@@ -73,7 +81,7 @@ export function HeroSection() {
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: revealEase, delay: 0.45 }}
+              transition={{ duration: 0.8, ease: revealEase, delay: 0.45 } satisfies Transition}
               className="mt-7 max-w-2xl text-base leading-8 text-[#0A0A0A]/72 sm:text-lg"
             >
               We design future-ready systems that connect safety, autonomy, and intelligence into practical infrastructure for everyday human life.
@@ -82,7 +90,7 @@ export function HeroSection() {
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: revealEase, delay: 0.55 }}
+              transition={{ duration: 0.8, ease: revealEase, delay: 0.55 } satisfies Transition}
               className="mt-7 flex flex-wrap gap-3"
             >
               {heroTags.map((item) => (
@@ -100,7 +108,7 @@ export function HeroSection() {
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: revealEase, delay: 0.24 }}
+              transition={{ duration: 0.6, ease: revealEase, delay: 0.24 } satisfies Transition}
               className="font-['JetBrains_Mono'] text-[0.64rem] uppercase tracking-[0.24em] text-[#0A0A0A]/58"
             >
               COMPANY STATS
@@ -109,7 +117,7 @@ export function HeroSection() {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: revealEase, delay: 0.32 }}
+              transition={{ duration: 0.7, ease: revealEase, delay: 0.32 } satisfies Transition}
               className="mt-4 space-y-3"
             >
               {heroStats.map((stat) => (
@@ -127,14 +135,14 @@ export function HeroSection() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, ease: revealEase, delay: 0.4 }}
+              transition={{ duration: 0.7, ease: revealEase, delay: 0.4 } satisfies Transition}
               className="my-6 border-t border-black/10"
             />
 
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: revealEase, delay: 0.48 }}
+              transition={{ duration: 0.8, ease: revealEase, delay: 0.48 } satisfies Transition}
               className="space-y-3"
             >
               <Link

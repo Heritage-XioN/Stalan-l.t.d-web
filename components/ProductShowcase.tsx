@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type Transition } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { getAllProducts } from '@/lib/products';
@@ -18,7 +18,7 @@ export function ProductShowcase() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: revealEase }}
+              transition={{ duration: 0.7, ease: revealEase } satisfies Transition}
               viewport={{ once: true, amount: 0.4 }}
               className="mb-5 font-['JetBrains_Mono'] text-xs uppercase tracking-[0.32em] text-[#0A0A0A]/52"
             >
@@ -27,7 +27,7 @@ export function ProductShowcase() {
             <motion.h2
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: revealEase, delay: 0.05 }}
+              transition={{ duration: 0.9, ease: revealEase, delay: 0.05 } satisfies Transition}
               viewport={{ once: true, amount: 0.35 }}
               className="font-['Syne'] text-4xl font-black tracking-[-0.05em] text-[#0A0A0A] sm:text-5xl lg:text-6xl"
             >
@@ -38,7 +38,7 @@ export function ProductShowcase() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: revealEase, delay: 0.12 }}
+            transition={{ duration: 0.8, ease: revealEase, delay: 0.12 } satisfies Transition}
             viewport={{ once: true, amount: 0.35 }}
             className="max-w-md text-base leading-7 text-[#0A0A0A]/64"
           >
@@ -49,7 +49,7 @@ export function ProductShowcase() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: revealEase }}
+          transition={{ duration: 0.8, ease: revealEase } satisfies Transition}
           viewport={{ once: true, amount: 0.25 }}
           className="mb-8"
         >
@@ -84,11 +84,9 @@ export function ProductShowcase() {
                 key={product.id}
                 initial={{ opacity: 0, y: 54 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.9,
-                  ease: revealEase,
-                  delay: index * 0.08,
-                }}
+                transition={
+                  { duration: 0.9, ease: revealEase, delay: index * 0.08 } satisfies Transition
+                }
                 viewport={{ once: true, amount: 0.2 }}
               >
                 <article className="group flex h-full flex-col border border-black/15 bg-white p-6 transition-colors duration-300 hover:border-[#C8F135] hover:bg-[#FCFFE9] sm:p-7">
