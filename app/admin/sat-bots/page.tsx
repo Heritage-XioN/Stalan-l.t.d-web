@@ -19,6 +19,8 @@ interface SatBotPost {
   title: string
   content: string
   imageUrl: string | null
+  price: number | null
+  specifications: Record<string, string> | null
   published: boolean
   createdAt: string
   updatedAt: string
@@ -27,7 +29,9 @@ interface SatBotPost {
 const initialFormData = {
   title: '',
   content: '',
-  imageUrl: ''
+  imageUrl: '',
+  price: '',
+  specifications: [{ key: '', value: '' }]
 }
 
 function getContentPreview(content: string) {
@@ -89,7 +93,12 @@ export default function SatBotsPage() {
     setFormData({
       title: post.title,
       content: post.content,
-      imageUrl: post.imageUrl ?? ''
+      imageUrl: post.imageUrl ?? '',
+      price: post.price ?? '',
+      specifications:
+        post.specifications && Object.keys(post.specifications).length > 0
+          ? Object.entries(post.specifications).map(([key, value]) => ({ key, value }))
+          : [{ key: '', value: '' }]
     })
     setIsDialogOpen(true)
   }
@@ -187,7 +196,16 @@ export default function SatBotsPage() {
     const payload = {
       title: formData.title,
       content: formData.content,
-      imageUrl: formData.imageUrl
+      imageUrl: formData.imageUrl,
+      price: formData.price.trim() || undefined,
+      specifications: formData.specifications.reduce<Record<string, string>>((acc, spec) => {
+        const key = spec.key.trim()
+        const value = spec.value.trim()
+        if (key && value) {
+          acc[key] = value
+        }
+        return acc
+      }, {})
     }
 
     try {
@@ -242,18 +260,18 @@ export default function SatBotsPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-[#FAFAFA] text-[#0A0A0A]">
       <AdminSidebar />
       <div className="ml-64 flex-1 p-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-[#0A1628]">S.A.T Bots</h1>
-              <p className="mt-2 text-sm text-gray-500">Manage trading bot updates, images, and text posts.</p>
+              <h1 className="text-3xl font-bold text-[#0A0A0A]">S.A.T Bots</h1>
+              <p className="mt-2 text-sm text-[#0A0A0A]/70">Manage trading bot updates, images, and text posts.</p>
             </div>
             <Button
               onClick={openCreateDialog}
-              className="bg-[#1A4FBF] hover:bg-[#1A4FBF]/90"
+              className="rounded-none bg-black text-white hover:bg-[#C8F135] hover:text-black"
             >
               <Plus className="mr-2 h-4 w-4" />
               Add Post
@@ -263,32 +281,32 @@ export default function SatBotsPage() {
           {isLoading ? (
             <div className="py-8 text-center">Loading...</div>
           ) : posts.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12 text-center text-gray-500">
-                <Bot className="mb-4 h-10 w-10 text-gray-300" />
-                <p className="text-base font-medium text-[#0A1628]">No S.A.T Bot posts yet</p>
-                <p className="mt-2 text-sm text-gray-500">Create the first update to start publishing trading bot content.</p>
+            <Card className="border border-black/20 bg-white">
+              <CardContent className="flex flex-col items-center justify-center py-12 text-center text-[#0A0A0A]/70">
+                <Bot className="mb-4 h-10 w-10 text-[#0A0A0A]/45" />
+                <p className="text-base font-medium text-[#0A0A0A]">No S.A.T Bot posts yet</p>
+                <p className="mt-2 text-sm text-[#0A0A0A]/70">Create the first update to start publishing trading bot content.</p>
               </CardContent>
             </Card>
           ) : (
-            <Card>
+            <Card className="border border-black/20 bg-white">
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Content</TableHead>
-                      <TableHead>Image</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Actions</TableHead>
+                    <TableRow className="bg-[#F5F5F5]">
+                      <TableHead className="font-bold text-black">Title</TableHead>
+                      <TableHead className="font-bold text-black">Content</TableHead>
+                      <TableHead className="font-bold text-black">Image</TableHead>
+                      <TableHead className="font-bold text-black">Status</TableHead>
+                      <TableHead className="font-bold text-black">Created</TableHead>
+                      <TableHead className="font-bold text-black">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {posts.map((post) => (
                       <TableRow key={post.id}>
-                        <TableCell className="font-medium">{post.title}</TableCell>
-                        <TableCell className="max-w-md text-sm text-gray-600">
+                        <TableCell className="font-medium text-[#0A0A0A]">{post.title}</TableCell>
+                        <TableCell className="max-w-md text-sm text-[#0A0A0A]">
                           {getContentPreview(post.content)}
                         </TableCell>
                         <TableCell>
@@ -297,12 +315,12 @@ export default function SatBotsPage() {
                               href={post.imageUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-sm text-[#1A4FBF] hover:underline"
+                              className="text-sm text-[#0A0A0A] hover:text-[#0A0A0A] hover:underline"
                             >
                               View image
                             </a>
                           ) : (
-                            <span className="text-sm text-gray-400">No image</span>
+                            <span className="text-sm text-[#0A0A0A]/60">No image</span>
                           )}
                         </TableCell>
                         <TableCell>
@@ -310,7 +328,7 @@ export default function SatBotsPage() {
                             {post.published ? 'Published' : 'Draft'}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-sm text-gray-500">
+                        <TableCell className="text-sm text-[#0A0A0A]">
                           {new Date(post.createdAt).toLocaleDateString()}
                         </TableCell>
                         <TableCell className="space-x-2">
@@ -347,13 +365,14 @@ export default function SatBotsPage() {
               }
             }}
           >
-            <DialogContent className="border-black/10 bg-[#FAFAFA] text-[#0A0A0A] sm:max-w-2xl">
+            <DialogContent className="border border-black/20 bg-white text-[#0A0A0A] sm:max-w-2xl">
               <DialogHeader>
                 <DialogTitle className="font-['Syne'] text-2xl font-black tracking-tight">
                   {selectedPost ? 'Edit S.A.T Bot Post' : 'Add S.A.T Bot Post'}
                 </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="max-h-[80vh] overflow-y-auto pr-6">
+                <form onSubmit={handleSubmit} className="space-y-5 pb-2">
                 <Input
                   placeholder="Title"
                   value={formData.title}
@@ -361,6 +380,7 @@ export default function SatBotsPage() {
                     setFormData({ ...formData, title: event.target.value })
                   }
                   required
+                  className="bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
                 />
                 <Textarea
                   placeholder="Content"
@@ -368,9 +388,84 @@ export default function SatBotsPage() {
                   onChange={(event) =>
                     setFormData({ ...formData, content: event.target.value })
                   }
-                  className="min-h-32"
                   required
+                  className="min-h-32 bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
                 />
+                <Input
+                  placeholder="Price (USD)"
+                  value={formData.price}
+                  onChange={(event) =>
+                    setFormData({ ...formData, price: event.target.value })
+                  }
+                  className="bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
+                />
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-[#0A0A0A]">Specifications</p>
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        setFormData((current) => ({
+                          ...current,
+                          specifications: [...current.specifications, { key: '', value: '' }]
+                        }))
+                      }
+                      className="rounded-none border-2 border-black bg-white px-3 py-1.5 text-xs font-semibold text-black hover:bg-[#F5F5F5]"
+                    >
+                      Add Spec
+                    </Button>
+                  </div>
+                  {formData.specifications.map((spec, index) => (
+                    <div key={`spec-${index}`} className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_1fr_auto]">
+                      <Input
+                        placeholder="Key (e.g. Accuracy)"
+                        value={spec.key}
+                        onChange={(event) =>
+                          setFormData((current) => ({
+                            ...current,
+                            specifications: current.specifications.map((item, idx) =>
+                              idx === index ? { ...item, key: event.target.value } : item
+                            )
+                          }))
+                        }
+                        className="rounded-none border-2 border-black bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
+                      />
+                      <Input
+                        placeholder="Value (e.g. 94%)"
+                        value={spec.value}
+                        onChange={(event) =>
+                          setFormData((current) => ({
+                            ...current,
+                            specifications: current.specifications.map((item, idx) =>
+                              idx === index ? { ...item, value: event.target.value } : item
+                            )
+                          }))
+                        }
+                        className="rounded-none border-2 border-black bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
+                      />
+                      <Button
+                        type="button"
+                        onClick={() =>
+                          setFormData((current) => {
+                            if (current.specifications.length === 1) {
+                              return {
+                                ...current,
+                                specifications: [{ key: '', value: '' }]
+                              }
+                            }
+                            return {
+                              ...current,
+                              specifications: current.specifications.filter((_, idx) => idx !== index)
+                            }
+                          })
+                        }
+                        className="rounded-none border-2 border-black bg-white px-3 py-2 text-xs font-semibold text-black hover:bg-[#F5F5F5]"
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                </div>
                 <div className="space-y-3">
                   <input
                     ref={fileInputRef}
@@ -472,11 +567,12 @@ export default function SatBotsPage() {
                 <Button
                   type="submit"
                   disabled={isSaving || isUploadingImage}
-                  className="h-12 w-full bg-[#0A0A0A] font-semibold text-white hover:bg-[#C8F135] hover:text-[#0A0A0A]"
+                  className="h-12 w-full rounded-none bg-black font-semibold text-white hover:bg-[#C8F135] hover:text-black"
                 >
                   {isSaving ? 'Saving...' : isUploadingImage ? 'Uploading image...' : selectedPost ? 'Save Changes' : 'Create Post'}
                 </Button>
-              </form>
+                </form>
+              </div>
             </DialogContent>
           </Dialog>
         </div>

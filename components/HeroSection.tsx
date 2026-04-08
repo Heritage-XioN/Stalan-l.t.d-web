@@ -1,49 +1,36 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 const revealEase = [0.16, 1, 0.3, 1] as const;
 
-const tickerItems = [
-  'SC-STATIC',
-  'DRONE TECHNOLOGY',
-  'SMART HOME',
-  'AI',
-];
+const tickerItems = ['ENGINEERING', 'AUTONOMY', 'SMART SYSTEMS', 'AI', 'SAFETY'];
 
 const headlineLines = [
-  [
-    { text: 'ADVANCING', outlined: false },
-    { text: 'TECHNOLOGY', outlined: true },
-  ],
-  [
-    { text: 'FOR', outlined: false },
-    { text: 'HUMANITY.', outlined: false },
-  ],
+  'ADVANCING',
+  'TECHNOLOGY',
+  'FOR HUMANITY',
 ];
 
-const heroStats = [
-  { value: '2024', label: 'Founded' },
-  { value: '04', label: 'Core Verticals' },
-  { value: '360°', label: 'Systems View' },
-  { value: 'NG', label: 'Origin' },
-];
+const heroStats = [{ value: '2024', label: 'Founded' }, { value: '03', label: 'Co-founders' }];
+const heroTags = ['Electrical Safety', 'Autonomous Mobility', 'Human-Centered AI'];
 
 export function HeroSection() {
   const tickerTrack = [...tickerItems, ...tickerItems, ...tickerItems];
 
   return (
     <section id="home" className="bg-[#FAFAFA] pt-24 text-[#0A0A0A] sm:pt-28">
-      <div className="w-full overflow-hidden border-y border-black/10 bg-[#C8F135] py-3">
+      <div className="w-full overflow-hidden border-y border-black/10 bg-[#C8F135] py-2.5">
         <motion.div
           animate={{ x: ['0%', '-50%'] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
           className="flex min-w-max items-center"
         >
           {tickerTrack.map((item, index) => (
             <span
               key={`${item}-${index}`}
-              className="px-5 font-['JetBrains_Mono'] text-sm font-medium uppercase tracking-[0.24em] text-[#0A0A0A]"
+              className="px-5 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.26em] text-[#0A0A0A]"
             >
               {item} •
             </span>
@@ -51,131 +38,120 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-16 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.25fr_0.75fr] lg:px-8">
-        <div className="max-w-4xl">
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: revealEase, delay: 0.15 }}
-            className="mb-8 font-['JetBrains_Mono'] text-xs uppercase tracking-[0.32em] text-[#0A0A0A]/55"
-          >
-            Stalan L.T.D — engineered systems for real-world human progress
-          </motion.p>
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        <div className="grid overflow-hidden border border-black/10 bg-white shadow-[0_20px_70px_rgba(10,10,10,0.06)] lg:grid-cols-[1.45fr_0.55fr]">
+          <div className="border-b border-black/10 p-6 sm:p-10 lg:border-b-0 lg:border-r lg:border-black/10 lg:p-12">
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: revealEase, delay: 0.1 }}
+              className="mb-5 font-['JetBrains_Mono'] text-[0.68rem] uppercase tracking-[0.28em] text-[#0A0A0A]/58"
+            >
+              STALAN L.T.D — ENGINEERED SYSTEMS FOR REAL-WORLD HUMAN PROGRESS
+            </motion.p>
 
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-            className="font-['Syne'] text-[clamp(3.8rem,10vw,8.8rem)] font-black uppercase leading-[0.88] tracking-[-0.06em]"
-          >
-            {headlineLines.map((line, lineIndex) => (
-              <span key={lineIndex} className="block overflow-hidden pb-2">
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, ease: revealEase }}
+              className="font-['Syne'] text-[clamp(2.7rem,7.6vw,7rem)] font-black uppercase leading-[0.88] tracking-[-0.05em]"
+            >
+              {headlineLines.map((line, index) => (
                 <motion.span
-                  initial={{ y: 100 }}
-                  animate={{ y: 0 }}
-                  transition={{
-                    duration: 1.1,
-                    ease: revealEase,
-                    delay: 0.2 + lineIndex * 0.18,
-                  }}
-                  className="block"
+                  key={line}
+                  initial={{ y: 44, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.75, ease: revealEase, delay: 0.18 + index * 0.12 }}
+                  className={`block ${line === 'TECHNOLOGY' ? 'text-transparent' : ''}`}
+                  style={line === 'TECHNOLOGY' ? { WebkitTextStroke: '1.4px #0A0A0A' } : undefined}
                 >
-                  <span className="flex flex-wrap items-center gap-x-[0.18em] gap-y-2">
-                    {line.map((word, wordIndex) => (
-                      <motion.span
-                        key={word.text}
-                        initial={{ opacity: 0, y: 36 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          duration: 0.8,
-                          ease: revealEase,
-                          delay: 0.34 + lineIndex * 0.18 + wordIndex * 0.12,
-                        }}
-                        className={word.outlined ? 'text-transparent' : ''}
-                        style={
-                          word.outlined
-                            ? { WebkitTextStroke: '1.5px #0A0A0A' }
-                            : undefined
-                        }
-                      >
-                        {word.text}
-                      </motion.span>
-                    ))}
-                  </span>
+                  {line}
                 </motion.span>
-              </span>
-            ))}
-          </motion.h1>
+              ))}
+            </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: revealEase, delay: 0.6 }}
-            className="mt-10 max-w-xl space-y-6"
-          >
-            <p className="text-lg leading-8 text-[#0A0A0A]/68 sm:text-xl">
-              We build precise, future-facing systems across electrical safety, autonomous mobility, smart living, and machine intelligence with a human-first point of view.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {['Electrical Safety', 'Autonomous Systems', 'Human-Centered AI'].map((item) => (
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: revealEase, delay: 0.45 }}
+              className="mt-7 max-w-2xl text-base leading-8 text-[#0A0A0A]/72 sm:text-lg"
+            >
+              We design future-ready systems that connect safety, autonomy, and intelligence into practical infrastructure for everyday human life.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: revealEase, delay: 0.55 }}
+              className="mt-7 flex flex-wrap gap-3"
+            >
+              {heroTags.map((item) => (
                 <span
                   key={item}
-                  className="rounded-full border border-black/10 bg-white px-4 py-2 font-['JetBrains_Mono'] text-xs uppercase tracking-[0.22em] text-[#0A0A0A]/72"
+                  className="border border-black/10 bg-[#FAFAFA] px-3.5 py-2 font-['JetBrains_Mono'] text-[0.66rem] uppercase tracking-[0.2em] text-[#0A0A0A]/78"
                 >
                   {item}
                 </span>
               ))}
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, ease: revealEase, delay: 0.45 }}
-          className="relative mx-auto flex w-full max-w-[28rem] items-center justify-center"
-        >
-          <div className="relative aspect-square w-full">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-0 rounded-full border border-black/10"
+          <div className="grid grid-rows-[auto_auto_1fr_auto] gap-0 bg-[#F5F5F5] p-6 sm:p-8">
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: revealEase, delay: 0.24 }}
+              className="font-['JetBrains_Mono'] text-[0.64rem] uppercase tracking-[0.24em] text-[#0A0A0A]/58"
             >
-              <div className="absolute inset-[7%] rounded-full border border-dashed border-black/12" />
-              <div className="absolute inset-[18%] rounded-full border border-black/8" />
-              <div className="absolute left-1/2 top-0 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/10 bg-white" />
-              <div className="absolute bottom-10 left-6 h-3 w-3 rounded-full bg-[#C8F135]" />
-              <div className="absolute right-8 top-12 h-3 w-3 rounded-full bg-[#0A0A0A]" />
+              COMPANY STATS
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: revealEase, delay: 0.32 }}
+              className="mt-4 space-y-3"
+            >
+              {heroStats.map((stat) => (
+                <div key={stat.label} className="border border-black/10 bg-white px-4 py-4">
+                  <p className="font-['JetBrains_Mono'] text-4xl font-semibold tracking-[-0.05em] text-[#0A0A0A]">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1 font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.22em] text-[#0A0A0A]/55">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
             </motion.div>
 
-            <div className="absolute inset-[14%] rounded-full border border-black/10 bg-white/70 shadow-[0_30px_90px_rgba(10,10,10,0.08)] backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, ease: revealEase, delay: 0.4 }}
+              className="my-6 border-t border-black/10"
+            />
 
-            <div className="absolute inset-[20%] flex flex-col justify-between rounded-full px-8 py-10">
-              <div className="text-center font-['JetBrains_Mono']">
-                <p className="text-[0.65rem] uppercase tracking-[0.32em] text-[#0A0A0A]/45">
-                  STALAN SIGNAL
-                </p>
-                <p className="mt-3 text-5xl font-semibold tracking-[-0.06em]">
-                  01
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 font-['JetBrains_Mono'] text-[#0A0A0A]">
-                {heroStats.map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="rounded-2xl border border-black/8 bg-[#FAFAFA]/90 px-3 py-4 text-center"
-                  >
-                    <p className="text-lg font-semibold tracking-[-0.04em]">{stat.value}</p>
-                    <p className="mt-1 text-[0.58rem] uppercase tracking-[0.24em] text-[#0A0A0A]/48">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: revealEase, delay: 0.48 }}
+              className="space-y-3"
+            >
+              <Link
+                href="/sat-bots"
+                className="inline-flex w-full items-center justify-center border border-black bg-[#0A0A0A] px-4 py-3 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#C8F135] hover:text-[#0A0A0A]"
+              >
+                Explore S.A.T Bot Lab
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex w-full items-center justify-center border border-black/20 bg-white px-4 py-3 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.22em] text-[#0A0A0A] transition-colors hover:border-[#C8F135] hover:bg-[#C8F135]"
+              >
+                Start a Project
+              </Link>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

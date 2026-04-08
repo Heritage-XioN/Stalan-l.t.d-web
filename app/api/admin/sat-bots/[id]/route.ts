@@ -15,6 +15,15 @@ const satBotPostSchema = z.object({
     (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
     z.string().optional()
   ),
+  price: z.preprocess(
+    (value) => {
+      if (value === null || value === undefined || value === '') return undefined
+      if (typeof value === 'string') return Number(value)
+      return value
+    },
+    z.number().nonnegative().optional()
+  ),
+  specifications: z.record(z.string(), z.string()).optional(),
   published: z.boolean().optional()
 })
 

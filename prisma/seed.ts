@@ -13,7 +13,7 @@ async function main() {
         slug: 'sc-static',
         name: 'SC-STATIC',
         category: 'Electrical Safety',
-        status: 'Active Development',
+        status: 'R&D Phase',
         description: 'An autonomous MultiZone Residual Current Device (RCD) designed to modernize electrical safety for homes, businesses, and marine vessels using 6-Channel Isolation Architecture.',
         features: [
           { title: 'Life Safety', description: '30mA residual current monitoring' },
@@ -30,7 +30,7 @@ async function main() {
         slug: 'drone-technology',
         name: 'Drone Technology',
         category: 'Logistics & UAV',
-        status: 'In Planning',
+        status: 'Upcoming',
         description: 'Revolutionizing logistics through faster, cost-efficient last-mile delivery and warehouse automation using UAVs that bypass traffic and geographical barriers.',
         features: [
           { title: 'Last-Mile Delivery', description: 'Fast, efficient package delivery' },
@@ -50,9 +50,9 @@ async function main() {
         status: 'Upcoming',
         description: 'An integrated system using connected devices, sensors, and software to automate and control household functions including lighting, security, climate, and energy management.',
         features: [
-          { title: 'Smart Lighting', description: 'Automated lighting control' },
-          { title: 'Security', description: 'Advanced security monitoring' },
-          { title: 'Energy Management', description: 'Optimize energy consumption' }
+          { title: '1. Smart thermostat that learns human behavior', description: 'Smart thermostat that learns human behavior.' },
+          { title: '2. SC-STATIC Integration', description: 'SC-STATIC Integration.' },
+          { title: '3. Smart light adjustment', description: 'Smart light adjustment.' }
         ],
         tags: ['Smart Home', 'IoT', 'Automation', 'Energy'],
         order: 3,
@@ -64,7 +64,7 @@ async function main() {
         slug: 'autonomous-vehicles',
         name: 'Autonomous Vehicles',
         category: 'Transportation',
-        status: 'Research Phase',
+        status: 'R&D Phase',
         description: 'Advanced autonomous vehicle research aimed at safer, smarter, and more efficient transportation solutions for tomorrow.',
         features: [
           { title: 'Safety', description: 'Advanced safety protocols' },
@@ -81,7 +81,7 @@ async function main() {
         slug: 'artificial-intelligence',
         name: 'Artificial Intelligence',
         category: 'AI & ML',
-        status: 'Ongoing',
+        status: 'R&D Phase',
         description: 'Continuous AI advancements integrated across all Stalan product lines to enable smarter, more adaptive technology.',
         features: [
           { title: 'Machine Learning', description: 'Adaptive learning systems' },

@@ -29,6 +29,9 @@ model Product {
   status      String
   description String
   features    Json
+  price       Decimal?
+  purchaseUrl String?
+  specifications Json?
   tags        String[]
   imageUrl    String?
   order       Int      @default(0)
@@ -62,13 +65,15 @@ model TeamMember {
 }
 
 model SatBotPost {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  imageUrl  String?
-  published Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(cuid())
+  title          String
+  content        String
+  imageUrl       String?
+  price          Float?
+  specifications Json?
+  published      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model NewsletterSubscriber {

@@ -52,35 +52,35 @@ export default function NewsletterPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-[#FAFAFA] text-[#0A0A0A]">
       <AdminSidebar />
       <div className="ml-64 flex-1 p-8">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold text-[#0A1628] mb-8">Newsletter Subscribers</h1>
+          <h1 className="mb-8 text-3xl font-bold text-[#0A0A0A]">Newsletter Subscribers</h1>
 
-          <Card>
+          <Card className="border border-black/20 bg-white">
             <CardContent className="p-0">
               {isLoading ? (
                 <div className="text-center py-8">Loading...</div>
               ) : subscribers.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-[#0A0A0A]">
                   No subscribers yet
                 </div>
               ) : (
                 <>
                   <Table>
                     <TableHeader>
-                      <TableRow>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Subscribed Date</TableHead>
-                        <TableHead>Actions</TableHead>
+                      <TableRow className="bg-[#F5F5F5]">
+                        <TableHead className="font-bold text-black">Email</TableHead>
+                        <TableHead className="font-bold text-black">Subscribed Date</TableHead>
+                        <TableHead className="font-bold text-black">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {subscribers.map((subscriber) => (
                         <TableRow key={subscriber.id}>
-                          <TableCell className="font-medium">{subscriber.email}</TableCell>
-                          <TableCell className="text-sm text-gray-500">
+                          <TableCell className="font-medium text-[#0A0A0A]">{subscriber.email}</TableCell>
+                          <TableCell className="text-sm text-[#0A0A0A]">
                             {new Date(subscriber.createdAt).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
@@ -96,7 +96,7 @@ export default function NewsletterPage() {
                       ))}
                     </TableBody>
                   </Table>
-                  <div className="p-4 border-t text-sm text-gray-600">
+                  <div className="border-t p-4 text-sm text-[#0A0A0A]">
                     Total subscribers: {subscribers.length}
                   </div>
                 </>

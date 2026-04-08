@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import { StalanLogo } from '@/components/StalanLogo';
@@ -14,12 +15,13 @@ import {
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   const navLinks = [
-    { label: 'Home', href: '#home' },
-    { label: 'About', href: '#about' },
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '/about' },
     { label: 'S.A.T Bot', href: '/sat-bots' },
-    { label: 'Services', href: '#services' },
+    { label: 'Services', href: '/services' },
   ];
 
   return (
@@ -36,15 +38,24 @@ export function Navbar() {
           </div>
 
           <div className="hidden items-center gap-1 rounded-full border border-black/5 bg-white/60 px-2 py-1 md:flex">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="rounded-full px-4 py-2 text-sm font-medium text-[#0A0A0A]/70 transition-colors hover:text-[#0A0A0A]"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive =
+                link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-[#C8F135] text-[#0A0A0A]'
+                      : 'text-[#0A0A0A]/70 hover:text-[#0A0A0A]'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="hidden md:block">
@@ -69,16 +80,25 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="right" className="border-black/10 bg-[#FAFAFA]/95 backdrop-blur-xl">
               <div className="mt-10 flex flex-col gap-4">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium text-[#0A0A0A] transition-colors hover:text-black/60"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {navLinks.map((link) => {
+                  const isActive =
+                    link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
+
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`rounded-md px-2 py-1 text-lg font-medium transition-colors ${
+                        isActive
+                          ? 'bg-[#C8F135] text-[#0A0A0A]'
+                          : 'text-[#0A0A0A] hover:text-black/60'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
                 <Button
                   asChild
                   className="mt-4 h-11 rounded-none border border-[#0A0A0A] bg-[#0A0A0A] text-sm font-semibold text-white shadow-[4px_4px_0px_0px_#0A0A0A] transition-all hover:border-[#C8F135] hover:bg-[#C8F135] hover:text-[#0A0A0A] hover:shadow-[4px_4px_0px_0px_#C8F135]"

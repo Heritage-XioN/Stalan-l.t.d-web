@@ -12,10 +12,23 @@ async function getSatBotPosts() {
 
 export default async function SatBotsPage() {
   const posts = await getSatBotPosts();
-  const galleryPosts = posts.map((post) => ({
-    ...post,
-    createdAt: post.createdAt.toISOString(),
-  }));
+  const galleryPosts = posts.map((post) => {
+    // Keep compatibility while local Prisma types refresh.
+    const postWithCommerce = post as typeof post & {
+      price?: number | null;
+      specifications?: unknown;
+    };
+
+    return {
+      ...post,
+      price:
+        typeof postWithCommerce.price === 'number'
+          ? postWithCommerce.price.toString()
+          : null,
+      specifications: postWithCommerce.specifications ?? null,
+      createdAt: post.createdAt.toISOString(),
+    };
+  });
 
   return (
     <main id="main-content" className="min-h-screen bg-[#FAFAFA] text-[#0A0A0A]">

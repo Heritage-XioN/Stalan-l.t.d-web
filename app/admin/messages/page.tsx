@@ -84,41 +84,41 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-[#FAFAFA] text-[#0A0A0A]">
       <AdminSidebar />
       <div className="ml-64 flex-1 p-8">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold text-[#0A1628] mb-8">Contact Messages</h1>
+          <h1 className="mb-8 text-3xl font-bold text-[#0A0A0A]">Contact Messages</h1>
 
           {isLoading ? (
             <div className="text-center py-8">Loading...</div>
           ) : messages.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-8 text-gray-500">
+            <Card className="border border-black/20 bg-white">
+              <CardContent className="py-8 text-center text-[#0A0A0A]">
                 No messages yet
               </CardContent>
             </Card>
           ) : (
-            <Card>
+            <Card className="border border-black/20 bg-white">
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Subject</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Actions</TableHead>
+                    <TableRow className="bg-[#F5F5F5]">
+                      <TableHead className="font-bold text-black">Name</TableHead>
+                      <TableHead className="font-bold text-black">Email</TableHead>
+                      <TableHead className="font-bold text-black">Subject</TableHead>
+                      <TableHead className="font-bold text-black">Date</TableHead>
+                      <TableHead className="font-bold text-black">Status</TableHead>
+                      <TableHead className="font-bold text-black">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {messages.map((message) => (
-                      <TableRow key={message.id} className="hover:bg-gray-50">
-                        <TableCell className="font-medium">{message.name}</TableCell>
-                        <TableCell>{message.email}</TableCell>
-                        <TableCell>{message.subject}</TableCell>
-                        <TableCell className="text-sm text-gray-500">
+                      <TableRow key={message.id} className="hover:bg-black/[0.03]">
+                        <TableCell className="font-medium text-[#0A0A0A]">{message.name}</TableCell>
+                        <TableCell className="text-[#0A0A0A]">{message.email}</TableCell>
+                        <TableCell className="text-[#0A0A0A]">{message.subject}</TableCell>
+                        <TableCell className="text-sm text-[#0A0A0A]">
                           {new Date(message.createdAt).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
@@ -163,25 +163,25 @@ export default function MessagesPage() {
           )}
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogContent>
+            <DialogContent className="border border-black/20 bg-white text-[#0A0A0A]">
               <DialogHeader>
                 <DialogTitle>{selectedMessage?.subject}</DialogTitle>
                 <DialogDescription>{selectedMessage?.email}</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">From</p>
-                  <p className="text-lg font-semibold">{selectedMessage?.name}</p>
+                  <p className="text-sm font-medium text-[#0A0A0A]/70">From</p>
+                  <p className="text-lg font-semibold text-[#0A0A0A]">{selectedMessage?.name}</p>
                 </div>
                 {selectedMessage?.company && (
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Company</p>
-                    <p>{selectedMessage.company}</p>
+                    <p className="text-sm font-medium text-[#0A0A0A]/70">Company</p>
+                    <p className="text-[#0A0A0A]">{selectedMessage.company}</p>
                   </div>
                 )}
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Message</p>
-                  <p className="whitespace-pre-wrap">{selectedMessage?.message}</p>
+                  <p className="text-sm font-medium text-[#0A0A0A]/70">Message</p>
+                  <p className="whitespace-pre-wrap text-[#0A0A0A]">{selectedMessage?.message}</p>
                 </div>
               </div>
             </DialogContent>

@@ -54,44 +54,44 @@ export default function TeamPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-[#FAFAFA] text-[#0A0A0A]">
       <AdminSidebar />
       <div className="ml-64 flex-1 p-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-[#0A1628]">Team Members</h1>
-            <Button className="bg-[#1A4FBF] hover:bg-[#1A4FBF]/90">
+            <h1 className="text-3xl font-bold text-[#0A0A0A]">Team Members</h1>
+            <Button className="rounded-none bg-black text-white hover:bg-[#C8F135] hover:text-black">
               <Plus className="h-4 w-4 mr-2" />
               Add Member
             </Button>
           </div>
 
-          <Card>
+          <Card className="border border-black/20 bg-white">
             <CardContent className="p-0">
               {isLoading ? (
                 <div className="text-center py-8">Loading...</div>
               ) : team.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">No team members yet</div>
+                <div className="text-center py-8 text-[#0A0A0A]">No team members yet</div>
               ) : (
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Title</TableHead>
-                      <TableHead>LinkedIn</TableHead>
-                      <TableHead>Actions</TableHead>
+                    <TableRow className="bg-[#F5F5F5]">
+                      <TableHead className="font-bold text-black">Name</TableHead>
+                      <TableHead className="font-bold text-black">Role</TableHead>
+                      <TableHead className="font-bold text-black">Title</TableHead>
+                      <TableHead className="font-bold text-black">LinkedIn</TableHead>
+                      <TableHead className="font-bold text-black">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {team.map((member) => (
                       <TableRow key={member.id}>
-                        <TableCell className="font-medium">{member.name}</TableCell>
-                        <TableCell>{member.role}</TableCell>
-                        <TableCell>{member.title}</TableCell>
-                        <TableCell>
+                        <TableCell className="font-medium text-[#0A0A0A]">{member.name}</TableCell>
+                        <TableCell className="text-[#0A0A0A]">{member.role}</TableCell>
+                        <TableCell className="text-[#0A0A0A]">{member.title}</TableCell>
+                        <TableCell className="text-[#0A0A0A]">
                           {member.linkedin ? (
-                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#0A0A0A] hover:text-[#0A0A0A] hover:underline">
                               Profile
                             </a>
                           ) : (

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Anchor, Compass, BarChart3, Clipboard, Wrench, Code2 } from 'lucide-react';
 import Link from 'next/link';
+import { Navbar } from '@/components/navbar';
 
 const services = [
   {
@@ -46,28 +47,20 @@ const highlights = [
 
 export default function ServicesPage() {
   return (
-    <main className="min-h-screen bg-[#0A1628]">
+    <main className="min-h-screen bg-background text-foreground">
+      <Navbar />
       {/* Hero Section */}
-      <section className="relative min-h-[40vh] flex items-center justify-center overflow-hidden pt-32 pb-16 px-4">
-        {/* Grid Background */}
-        <div className="absolute inset-0 opacity-10">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(0,194,255,.05) 25%, rgba(0,194,255,.05) 26%, transparent 27%, transparent 74%, rgba(0,194,255,.05) 75%, rgba(0,194,255,.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0,194,255,.05) 25%, rgba(0,194,255,.05) 26%, transparent 27%, transparent 74%, rgba(0,194,255,.05) 75%, rgba(0,194,255,.05) 76%, transparent 77%, transparent)',
-              backgroundSize: '50px 50px',
-            }}
-          />
-        </div>
-
+      <section className="flex min-h-[34vh] items-center justify-center px-4 pb-10 pt-24 sm:pb-12 sm:pt-28">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center relative z-10 max-w-3xl"
+          className="max-w-5xl text-center"
         >
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Engineering Services</h1>
-          <p className="text-xl text-gray-300">
+          <h1 className="font-['Syne'] text-[clamp(2.4rem,7.2vw,5.6rem)] font-black uppercase tracking-[-0.05em] text-foreground">
+            ENGINEERING SERVICES
+          </h1>
+          <p className="mx-auto mt-5 max-w-3xl text-lg text-foreground/70 sm:text-xl">
             Specialized professional, technical, and creative expertise rooted in physical, mathematical, and engineering sciences.
           </p>
         </motion.div>
@@ -75,9 +68,10 @@ export default function ServicesPage() {
 
       {/* Services Grid */}
       <section className="py-20 px-4 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:grid-rows-[repeat(3,minmax(220px,auto))]">
           {services.map((service, idx) => {
             const Icon = service.icon;
+            const isFeatured = idx === 0;
             return (
               <motion.div
                 key={idx}
@@ -85,13 +79,17 @@ export default function ServicesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-lg p-8 shadow-lg hover:shadow-2xl hover:shadow-[#00C2FF]/20 transition-all duration-300 group cursor-pointer border-t-4 border-[#00C2FF] hover:-translate-y-2"
+                className={`${isFeatured ? 'md:col-span-2 md:row-span-2' : 'md:col-span-1 md:row-span-1'} group cursor-pointer border border-black/10 bg-white p-7 text-[#0A0A0A] transition-all duration-300 dark:border-white/10 dark:bg-[#111111] dark:text-[#F5F5F5] hover:border-[#C8F135] hover:bg-[#0A0A0A] hover:text-[#F5F5F5] dark:hover:bg-[#F5F5F5] dark:hover:text-[#0A0A0A]`}
               >
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-[#1A4FBF] mb-6 group-hover:bg-[#00C2FF] transition-colors">
-                  <Icon className="w-8 h-8 text-white" />
+                <div className={`mb-6 flex h-14 w-14 items-center justify-center border border-black/10 bg-[#FAFAFA] transition-colors dark:border-white/10 dark:bg-black/20 ${isFeatured ? 'h-16 w-16' : ''} group-hover:border-[#C8F135] group-hover:bg-[#C8F135]`}>
+                  <Icon className={`${isFeatured ? 'h-8 w-8' : 'h-7 w-7'} text-[#0A0A0A] transition-colors dark:text-[#F5F5F5] group-hover:text-[#0A0A0A]`} />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{service.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{service.description}</p>
+                <h3 className={`mb-3 font-['Syne'] font-black tracking-[-0.04em] text-[#0A0A0A] transition-colors dark:text-[#F5F5F5] group-hover:text-[#F5F5F5] dark:group-hover:text-[#0A0A0A] ${isFeatured ? 'text-4xl' : 'text-2xl'}`}>
+                  {service.title}
+                </h3>
+                <p className={`${isFeatured ? 'max-w-3xl text-lg leading-8' : 'text-base leading-7'} text-[#0A0A0A]/72 transition-colors dark:text-[#F5F5F5]/78 group-hover:text-[#F5F5F5]/92 dark:group-hover:text-[#0A0A0A]/85`}>
+                  {service.description}
+                </p>
               </motion.div>
             );
           })}
@@ -99,9 +97,11 @@ export default function ServicesPage() {
       </section>
 
       {/* Why Choose Stalan Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-[#0A1628] via-[#1A2F4F] to-[#0A1628]">
+      <section className="border-y border-black/10 bg-[#FAFAFA] px-4 py-16 text-[#0A0A0A]">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-white text-center mb-12">Why Choose Stalan?</h2>
+          <h2 className="mb-12 text-center font-['Syne'] text-4xl font-black tracking-[-0.04em] text-[#0A0A0A]">
+            Why Choose Stalan?
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {highlights.map((item, idx) => (
               <motion.div
@@ -110,10 +110,10 @@ export default function ServicesPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                className="text-center p-6 rounded-lg bg-white/5 backdrop-blur border border-white/10 hover:border-[#00C2FF]/50 transition-colors"
+                className="border border-black/15 bg-white p-6 text-center transition-colors"
               >
-                <div className="text-4xl font-bold text-[#00C2FF] mb-3">{item.icon}</div>
-                <p className="text-white font-semibold">{item.label}</p>
+                <div className="mb-3 font-['JetBrains_Mono'] text-4xl font-bold text-[#C8F135]">{item.icon}</div>
+                <p className="font-semibold text-[#0A0A0A]">{item.label}</p>
               </motion.div>
             ))}
           </div>
@@ -127,15 +127,15 @@ export default function ServicesPage() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto text-center bg-gradient-to-r from-[#1A4FBF]/10 to-[#00C2FF]/10 rounded-2xl p-12 border border-[#00C2FF]/20"
+          className="mx-auto max-w-4xl border border-black/10 bg-[#0A0A0A] p-12 text-center text-[#F5F5F5] dark:border-white/10 dark:bg-[#F5F5F5] dark:text-[#0A0A0A]"
         >
-          <h2 className="text-4xl font-bold text-white mb-4">Ready to work with us?</h2>
-          <p className="text-lg text-gray-300 mb-8">
+          <h2 className="mb-4 font-['Syne'] text-4xl font-black tracking-[-0.04em]">Ready to work with us?</h2>
+          <p className="mb-8 text-lg text-inherit/80">
             Let&apos;s discuss how our engineering expertise can transform your next project.
           </p>
           <Link
             href="/contact"
-            className="inline-block px-8 py-4 bg-[#00C2FF] text-[#0A1628] font-bold rounded-lg hover:bg-white transition-colors shadow-lg hover:shadow-[#00C2FF]/30"
+            className="inline-block border border-[#C8F135] bg-[#C8F135] px-8 py-4 font-bold text-[#0A0A0A] transition-opacity hover:opacity-85"
           >
             Contact Our Team
           </Link>

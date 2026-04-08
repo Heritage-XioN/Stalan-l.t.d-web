@@ -39,16 +39,16 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1628] flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-white border-none shadow-xl">
+    <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] text-[#0A0A0A] p-4">
+      <Card className="w-full max-w-md border border-black/20 bg-white shadow-xl">
         <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl text-[#0A1628]">Stalan Admin</CardTitle>
-          <CardDescription>Enter your password to access the admin dashboard</CardDescription>
+          <CardTitle className="text-2xl text-[#0A0A0A]">Stalan Admin</CardTitle>
+          <CardDescription className="text-[#0A0A0A]/70">Enter your password to access the admin dashboard</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="text-sm font-medium text-[#0A0A0A]">
                 Password
               </label>
               <Input
@@ -58,14 +58,14 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
-                className="border-gray-300"
+                className="bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
               />
             </div>
             {error && <div className="text-red-500 text-sm">{error}</div>}
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#1A4FBF] hover:bg-[#1A4FBF]/90"
+              className="w-full rounded-none bg-black text-white hover:bg-[#C8F135] hover:text-black"
             >
               {isLoading ? 'Authenticating...' : 'Login'}
             </Button>

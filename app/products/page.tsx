@@ -20,56 +20,68 @@ const iconMap: { [key: string]: React.ReactNode } = {
 };
 
 function ProductCard({ product }: { product: ReturnType<typeof getAllProducts>[0] }) {
+  const isUpcoming = product.badge.toLowerCase() === 'upcoming';
+
   return (
-    <Link href={`/products/${product.slug}`}>
-      <div className="relative group h-full">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1A4FBF] to-[#00C2FF] rounded-lg opacity-0 group-hover:opacity-20 blur transition-opacity duration-300" />
-        <div className="relative h-full bg-[#1a2f4f] border border-[#1a3a5f] rounded-lg p-6 transition-all duration-300 hover:border-[#00C2FF] hover:shadow-lg hover:shadow-[#00C2FF]/20 flex flex-col">
-          {/* Badge */}
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-semibold text-[#00C2FF] bg-[#00C2FF]/10 px-3 py-1 rounded-full">
-              {product.badge}
+    <div className="relative group h-full">
+      <div className="absolute inset-0 bg-gradient-to-r from-[#1A4FBF] to-[#00C2FF] rounded-lg opacity-0 group-hover:opacity-20 blur transition-opacity duration-300" />
+      <div className="relative h-full bg-[#1a2f4f] border border-[#1a3a5f] rounded-lg p-6 transition-all duration-300 hover:border-[#00C2FF] hover:shadow-lg hover:shadow-[#00C2FF]/20 flex flex-col">
+        {/* Badge */}
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs font-semibold text-[#00C2FF] bg-[#00C2FF]/10 px-3 py-1 rounded-full">
+            {product.badge}
+          </span>
+          <span className="text-xs text-[#b0bcc8]">{product.category}</span>
+        </div>
+
+        {/* Icon */}
+        <div className="w-12 h-12 rounded-lg bg-[#1A4FBF]/20 flex items-center justify-center mb-4 text-[#00C2FF] transition-transform group-hover:scale-110 duration-300">
+          {iconMap[product.icon] || <Shield className="w-6 h-6" />}
+        </div>
+
+        {/* Title */}
+        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#00C2FF] transition-colors">
+          {product.name}
+        </h3>
+
+        {/* Description */}
+        <p className="text-[#b0bcc8] text-sm mb-4 flex-grow leading-relaxed">
+          {product.shortDescription}
+        </p>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {product.tags.slice(0, 2).map((tag) => (
+            <span key={tag} className="text-xs text-[#334455] bg-[#0A1628]/50 px-2 py-1 rounded border border-[#1a3a5f]">
+              {tag}
             </span>
-            <span className="text-xs text-[#b0bcc8]">{product.category}</span>
-          </div>
+          ))}
+          {product.tags.length > 2 && (
+            <span className="text-xs text-[#334455] bg-[#0A1628]/50 px-2 py-1 rounded border border-[#1a3a5f]">
+              +{product.tags.length - 2}
+            </span>
+          )}
+        </div>
 
-          {/* Icon */}
-          <div className="w-12 h-12 rounded-lg bg-[#1A4FBF]/20 flex items-center justify-center mb-4 text-[#00C2FF] transition-transform group-hover:scale-110 duration-300">
-            {iconMap[product.icon] || <Shield className="w-6 h-6" />}
-          </div>
-
-          {/* Title */}
-          <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#00C2FF] transition-colors">
-            {product.name}
-          </h3>
-
-          {/* Description */}
-          <p className="text-[#b0bcc8] text-sm mb-4 flex-grow leading-relaxed">
-            {product.shortDescription}
-          </p>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {product.tags.slice(0, 2).map((tag) => (
-              <span key={tag} className="text-xs text-[#334455] bg-[#0A1628]/50 px-2 py-1 rounded border border-[#1a3a5f]">
-                {tag}
-              </span>
-            ))}
-            {product.tags.length > 2 && (
-              <span className="text-xs text-[#334455] bg-[#0A1628]/50 px-2 py-1 rounded border border-[#1a3a5f]">
-                +{product.tags.length - 2}
-              </span>
-            )}
-          </div>
-
-          {/* CTA */}
-          <div className="flex items-center gap-2 text-[#00C2FF] font-semibold text-sm group-hover:gap-3 transition-all">
+        {/* CTA */}
+        {isUpcoming ? (
+          <Link
+            href="/#newsletter"
+            className="mt-auto inline-flex items-center justify-center border border-[#C8F135] bg-[#C8F135] px-4 py-2 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.2em] text-black transition-opacity hover:opacity-85"
+          >
+            JOIN WAITLIST
+          </Link>
+        ) : (
+          <Link
+            href={`/products/${product.slug}`}
+            className="mt-auto inline-flex items-center gap-2 text-[#00C2FF] font-semibold text-sm group-hover:gap-3 transition-all"
+          >
             Learn More
             <ArrowRight className="w-4 h-4" />
-          </div>
-        </div>
+          </Link>
+        )}
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -92,6 +104,13 @@ export default function ProductsPage() {
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 Our Products
               </h1>
+              <div className="mx-auto mb-6 max-w-4xl border border-black/20 bg-[#C8F135] px-5 py-4 text-left text-sm font-medium leading-relaxed text-black md:text-base">
+                Notice: Our hardware ecosystem is currently in the Research &amp; Development phase. For our active live intelligence feed, please{' '}
+                <Link href="/sat-bots" className="underline decoration-black/80 underline-offset-2 hover:opacity-80">
+                  visit the S.A.T Bots lab
+                </Link>
+                .
+              </div>
               <p className="text-lg text-[#b0bcc8] max-w-2xl mx-auto">
                 Next-generation technology built for humanity
               </p>

@@ -27,12 +27,12 @@ export function AdminSidebar() {
   }
 
   return (
-    <div className="w-64 bg-[#0A1628] text-white h-screen fixed left-0 top-0 flex flex-col">
+    <div className="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-white/10 bg-[#000000] text-[#FFFFFF]">
       <div className="p-6 border-b border-white/10">
         <h1 className="text-xl font-bold">STALAN Admin</h1>
       </div>
 
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 space-y-2 overflow-y-auto p-4">
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
@@ -41,7 +41,9 @@ export function AdminSidebar() {
               <Button
                 variant={isActive ? 'default' : 'ghost'}
                 className={`w-full justify-start gap-2 ${
-                  isActive ? 'bg-[#1A4FBF] hover:bg-[#1A4FBF]' : 'text-white hover:bg-white/10'
+                  isActive
+                    ? 'bg-[#C8F135] text-[#0A0A0A] hover:bg-[#C8F135]'
+                    : 'text-white hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -52,11 +54,11 @@ export function AdminSidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-white/10">
+      <div className="mt-auto shrink-0 border-t border-white/10 p-4">
         <Button
           onClick={handleLogout}
           variant="ghost"
-          className="w-full justify-start gap-2 text-red-400 hover:bg-red-500/10 hover:text-red-400"
+          className="w-full justify-start gap-2 text-[#FFFFFF] hover:bg-white/10 hover:text-[#FFFFFF]"
         >
           <LogOut className="h-4 w-4" />
           Logout
