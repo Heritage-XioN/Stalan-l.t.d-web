@@ -5,10 +5,10 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Stalan L.T.D — Advancing Technology for Humanity',
+    default: 'Stalan L.T.D — Revolutionizing Modern Day Technology',
     template: '%s | Stalan L.T.D',
   },
-  description: 'Stalan L.T.D is a multi-disciplinary technology firm dedicated to advancing safe and healthy technology for the development of society.',
+  description: 'Stalan L.T.D is a multi-disciplinary technology firm dedicated to revolutionizing modern day technology for the development of society.',
   keywords: ['Stalan', 'technology', 'RCD', 'SC-Static', 'drone', 'smart home', 'Nigeria', 'engineering'],
   icons: {
     icon: [
@@ -16,18 +16,32 @@ export const metadata: Metadata = {
         url: '/icon.svg',
         type: 'image/svg+xml',
       },
+      {
+        url: '/stalan-logo02.png',
+        type: 'image/png',
+        sizes: '512x512',
+      },
     ],
     apple: '/apple-icon.png',
   },
   openGraph: {
     type: 'website',
     siteName: 'Stalan L.T.D',
-    title: 'Stalan L.T.D — Advancing Technology for Humanity',
+    title: 'Stalan L.T.D — Revolutionizing Modern Day Technology',
     description: 'Multi-disciplinary technology firm building next-generation safe infrastructure.',
     url: 'https://stalan.ltd',
+    images: [
+      {
+        url: '/stalan-logo02.png',
+        width: 512,
+        height: 512,
+        alt: 'Stalan L.T.D Logo',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
+    images: ['/stalan-logo02.png'],
   },
 }
 

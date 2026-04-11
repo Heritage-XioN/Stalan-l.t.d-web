@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Get in touch with Stalan L.T.D. We\'d love to hear from you about projects, partnerships, and inquiries.',
+  description: 'Get in touch with Stalan L.T.D. Reach out to start a project, request a demo, or discuss a partnership.',
   openGraph: {
     title: 'Contact Stalan L.T.D',
-    description: 'Reach out to discuss your technology needs and partnerships.',
+    description: 'Start a project or discuss your technology needs with our team.',
   },
 };
 

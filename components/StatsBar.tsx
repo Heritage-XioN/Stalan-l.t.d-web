@@ -53,7 +53,6 @@ function StatItem({ label, value, isNumber = false, endValue = 0 }: StatItemProp
 export function StatsBar() {
   const stats = [
     { label: '3 Co-Founders', value: '3', isNumber: true, endValue: 3 },
-    { label: 'Founded', value: '2024', isNumber: false },
     { label: 'SC-STATIC Channels', value: '6', isNumber: true, endValue: 6 },
     { label: 'Industries', value: '5+', isNumber: false },
   ];

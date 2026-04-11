@@ -139,10 +139,10 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#FAFAFA] text-[#C8F135]">
           <Bot className="h-10 w-10" />
         </div>
-        <h2 className="mt-6 font-['Syne'] text-3xl font-black tracking-tight text-[#0A0A0A]">
+        <h2 className="mt-6 font-['Plus_Jakarta_Sans'] text-3xl font-black tracking-tight text-[#0A0A0A]">
           No S.A.T Bot posts yet
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl font-['Syne'] text-lg leading-8 text-[#0A0A0A]/62">
+        <p className="mx-auto mt-4 max-w-2xl font-['Plus_Jakarta_Sans'] text-lg leading-8 text-[#0A0A0A]/62">
           Fresh visuals and updates will appear here as soon as the team publishes the first S.A.T Bot release notes.
         </p>
       </div>
@@ -190,7 +190,7 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
                 <div className="flex h-20 w-20 items-center justify-center rounded-full border border-black/8 bg-white text-[#C8F135]">
                   <Bot className="h-10 w-10" />
                 </div>
-                <p className="mt-5 font-['Syne'] text-lg font-bold tracking-tight text-[#0A0A0A]">
+                <p className="mt-5 font-['Plus_Jakarta_Sans'] text-lg font-bold tracking-tight text-[#0A0A0A]">
                   Visual coming soon
                 </p>
               </motion.div>
@@ -198,11 +198,11 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
           </div>
 
           <div className="space-y-5 p-7">
-            <p className="font-['Syne'] text-sm font-bold uppercase tracking-[0.24em] text-[#0A0A0A]/42">
+            <p className="font-['Plus_Jakarta_Sans'] text-sm font-bold uppercase tracking-[0.24em] text-[#0A0A0A]/42">
               {dateFormatter.format(new Date(post.createdAt))}
             </p>
             <div className="flex items-start justify-between gap-4">
-              <h2 className="font-['Syne'] text-3xl font-black leading-tight tracking-[-0.04em] text-[#0A0A0A]">
+              <h2 className="font-['Plus_Jakarta_Sans'] text-3xl font-black leading-tight tracking-[-0.04em] text-[#0A0A0A]">
                 {post.title}
               </h2>
               {formatPrice(post.price) ? (
@@ -211,7 +211,7 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
                 </p>
               ) : null}
             </div>
-            <p className="whitespace-pre-wrap font-['Syne'] text-base leading-8 text-[#0A0A0A]/68">
+            <p className="whitespace-pre-wrap font-['Plus_Jakarta_Sans'] text-base leading-8 text-[#0A0A0A]/68">
               {post.content}
             </p>
 
@@ -271,7 +271,7 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
                 </DialogTrigger>
                 <DialogContent className="border-black/10 bg-[#FAFAFA] text-[#0A0A0A] sm:max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle className="font-['Syne'] text-3xl font-black tracking-tight">
+                    <DialogTitle className="font-['Plus_Jakarta_Sans'] text-3xl font-black tracking-tight">
                       {post.title}
                     </DialogTitle>
                   </DialogHeader>
@@ -281,7 +281,7 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
                         {formatPrice(post.price)}
                       </p>
                     ) : null}
-                    <p className="whitespace-pre-wrap font-['Syne'] text-lg leading-8 text-[#0A0A0A]/76">
+                    <p className="whitespace-pre-wrap font-['Plus_Jakarta_Sans'] text-lg leading-8 text-[#0A0A0A]/76">
                       {post.content}
                     </p>
                     {getSpecificationsList(post.specifications).length > 0 ? (

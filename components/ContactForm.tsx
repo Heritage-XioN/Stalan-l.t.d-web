@@ -17,6 +17,12 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
+const inputClass =
+  "w-full bg-white border border-black/15 px-4 py-3 font-['JetBrains_Mono'] text-sm text-[#0A0A0A] placeholder:text-[#0A0A0A]/35 outline-none transition focus:border-[#0A0A0A] focus:ring-0";
+
+const labelClass =
+  "block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.22em] text-[#0A0A0A]/55 mb-2";
+
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -49,7 +55,7 @@ export function ContactForm() {
 
       setSubmitStatus('success');
       reset();
-      setTimeout(() => setSubmitStatus('idle'), 5000);
+      setTimeout(() => setSubmitStatus('idle'), 6000);
     } catch (error) {
       setSubmitStatus('error');
       setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
@@ -59,103 +65,116 @@ export function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {/* Name */}
       <div>
-        <label className="block text-sm font-medium text-gray-900 mb-2">Full Name *</label>
+        <label className={labelClass}>Full Name *</label>
         <input
           {...register('name')}
           type="text"
           placeholder="Your name"
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#1A4FBF] focus:ring-2 focus:ring-[#1A4FBF]/20 outline-none transition"
+          className={inputClass}
         />
-        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+        {errors.name && (
+          <p className="mt-1 font-['JetBrains_Mono'] text-[0.6rem] text-red-500">{errors.name.message}</p>
+        )}
       </div>
 
       {/* Email */}
       <div>
-        <label className="block text-sm font-medium text-gray-900 mb-2">Email Address *</label>
+        <label className={labelClass}>Email Address *</label>
         <input
           {...register('email')}
           type="email"
           placeholder="you@example.com"
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#1A4FBF] focus:ring-2 focus:ring-[#1A4FBF]/20 outline-none transition"
+          className={inputClass}
         />
-        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+        {errors.email && (
+          <p className="mt-1 font-['JetBrains_Mono'] text-[0.6rem] text-red-500">{errors.email.message}</p>
+        )}
       </div>
 
       {/* Company */}
       <div>
-        <label className="block text-sm font-medium text-gray-900 mb-2">Company / Organization</label>
+        <label className={labelClass}>Company / Organization</label>
         <input
           {...register('company')}
           type="text"
           placeholder="Your company (optional)"
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#1A4FBF] focus:ring-2 focus:ring-[#1A4FBF]/20 outline-none transition"
+          className={inputClass}
         />
       </div>
 
       {/* Subject */}
       <div>
-        <label className="block text-sm font-medium text-gray-900 mb-2">Subject *</label>
+        <label className={labelClass}>Subject *</label>
         <select
           {...register('subject')}
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#1A4FBF] focus:ring-2 focus:ring-[#1A4FBF]/20 outline-none transition bg-white"
+          className={`${inputClass} cursor-pointer`}
+          defaultValue=""
         >
-          <option value="">Select a subject</option>
+          <option value="" disabled>Select a subject</option>
           <option value="General Inquiry">General Inquiry</option>
           <option value="Product Demo">Product Demo</option>
           <option value="Partnership">Partnership</option>
           <option value="Engineering Services">Engineering Services</option>
           <option value="Other">Other</option>
         </select>
-        {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject.message}</p>}
+        {errors.subject && (
+          <p className="mt-1 font-['JetBrains_Mono'] text-[0.6rem] text-red-500">{errors.subject.message}</p>
+        )}
       </div>
 
       {/* Message */}
       <div>
-        <label className="block text-sm font-medium text-gray-900 mb-2">Message *</label>
+        <label className={labelClass}>Message *</label>
         <textarea
           {...register('message')}
           placeholder="Tell us about your project or inquiry..."
           rows={6}
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#1A4FBF] focus:ring-2 focus:ring-[#1A4FBF]/20 outline-none transition resize-none"
+          className={`${inputClass} resize-none`}
         />
-        {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>}
+        {errors.message && (
+          <p className="mt-1 font-['JetBrains_Mono'] text-[0.6rem] text-red-500">{errors.message.message}</p>
+        )}
       </div>
 
       {/* Status Messages */}
       {submitStatus === 'success' && (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg"
+          className="flex items-center gap-3 border border-black/10 bg-[#C8F135]/30 px-4 py-3"
         >
-          <Check className="w-5 h-5 text-green-600" />
-          <p className="text-green-800">Your message has been sent! We&apos;ll get back to you soon.</p>
+          <Check className="h-4 w-4 shrink-0 text-[#0A0A0A]" />
+          <p className="font-['JetBrains_Mono'] text-[0.65rem] uppercase tracking-[0.18em] text-[#0A0A0A]">
+            Message sent — we&apos;ll get back to you soon.
+          </p>
         </motion.div>
       )}
 
       {submitStatus === 'error' && (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg"
+          className="flex items-center gap-3 border border-red-200 bg-red-50 px-4 py-3"
         >
-          <AlertCircle className="w-5 h-5 text-red-600" />
-          <p className="text-red-800">{errorMessage || 'Failed to send message. Please try again.'}</p>
+          <AlertCircle className="h-4 w-4 shrink-0 text-red-600" />
+          <p className="font-['JetBrains_Mono'] text-[0.65rem] uppercase tracking-[0.18em] text-red-700">
+            {errorMessage || 'Failed to send. Please try again.'}
+          </p>
         </motion.div>
       )}
 
-      {/* Submit Button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full px-6 py-4 bg-[#00C2FF] text-[#0A1628] font-bold rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-[#00C2FF]/30"
+        className="inline-flex w-full items-center justify-center gap-2 border border-black bg-[#0A0A0A] px-6 py-4 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#C8F135] hover:text-[#0A0A0A] hover:border-[#C8F135] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" />
             Sending...
           </>
         ) : (

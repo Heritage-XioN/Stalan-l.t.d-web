@@ -14,13 +14,16 @@ const tickerTransition: Transition = {
 const tickerItems = ['ENGINEERING', 'AUTONOMY', 'SMART SYSTEMS', 'AI', 'SAFETY'];
 
 const headlineLines = [
-  'ADVANCING',
+  'REVOLUTIONIZING',
+  'MODERN DAY',
   'TECHNOLOGY',
-  'FOR HUMANITY',
 ];
 
-const heroStats = [{ value: '2024', label: 'Founded' }, { value: '03', label: 'Co-founders' }];
-const heroTags = ['Electrical Safety', 'Autonomous Mobility', 'Human-Centered AI'];
+const focusAreas = [
+  { label: 'Electrical Safety', sub: 'RCCB / SC-STATIC Systems' },
+  { label: 'Autonomous Mobility', sub: 'S.A.T Bot Platform' },
+  { label: 'Human-Centered AI', sub: 'Intelligent Infrastructure' },
+];
 
 export function HeroSection() {
   const tickerTrack = [...tickerItems, ...tickerItems, ...tickerItems];
@@ -60,7 +63,7 @@ export function HeroSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, ease: revealEase } satisfies Transition}
-              className="font-['Syne'] text-[clamp(2.7rem,7.6vw,7rem)] font-black uppercase leading-[0.88] tracking-[-0.05em]"
+              className="font-['Plus_Jakarta_Sans'] text-[clamp(2.7rem,7.6vw,7rem)] font-black uppercase leading-[0.88] tracking-[-0.05em]"
             >
               {headlineLines.map((line, index) => (
                 <motion.span
@@ -70,8 +73,8 @@ export function HeroSection() {
                   transition={
                     { duration: 0.75, ease: revealEase, delay: 0.18 + index * 0.12 } satisfies Transition
                   }
-                  className={`block ${line === 'TECHNOLOGY' ? 'text-transparent' : ''}`}
-                  style={line === 'TECHNOLOGY' ? { WebkitTextStroke: '1.4px #0A0A0A' } : undefined}
+                  className={`block ${line === 'MODERN DAY' ? 'text-transparent' : ''}`}
+                  style={line === 'MODERN DAY' ? { WebkitTextStroke: '1.4px #0A0A0A' } : undefined}
                 >
                   {line}
                 </motion.span>
@@ -93,25 +96,25 @@ export function HeroSection() {
               transition={{ duration: 0.8, ease: revealEase, delay: 0.55 } satisfies Transition}
               className="mt-7 flex flex-wrap gap-3"
             >
-              {heroTags.map((item) => (
+              {focusAreas.map((area) => (
                 <span
-                  key={item}
+                  key={area.label}
                   className="border border-black/10 bg-[#FAFAFA] px-3.5 py-2 font-['JetBrains_Mono'] text-[0.66rem] uppercase tracking-[0.2em] text-[#0A0A0A]/78"
                 >
-                  {item}
+                  {area.label}
                 </span>
               ))}
             </motion.div>
           </div>
 
-          <div className="grid grid-rows-[auto_auto_1fr_auto] gap-0 bg-[#F5F5F5] p-6 sm:p-8">
+          <div className="grid grid-rows-[auto_1fr_auto] gap-0 bg-[#F5F5F5] p-6 sm:p-8">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: revealEase, delay: 0.24 } satisfies Transition}
               className="font-['JetBrains_Mono'] text-[0.64rem] uppercase tracking-[0.24em] text-[#0A0A0A]/58"
             >
-              COMPANY STATS
+              FOCUS AREAS
             </motion.p>
 
             <motion.div
@@ -120,13 +123,13 @@ export function HeroSection() {
               transition={{ duration: 0.7, ease: revealEase, delay: 0.32 } satisfies Transition}
               className="mt-4 space-y-3"
             >
-              {heroStats.map((stat) => (
-                <div key={stat.label} className="border border-black/10 bg-white px-4 py-4">
-                  <p className="font-['JetBrains_Mono'] text-4xl font-semibold tracking-[-0.05em] text-[#0A0A0A]">
-                    {stat.value}
+              {focusAreas.map((area) => (
+                <div key={area.label} className="border border-black/10 bg-white px-4 py-4">
+                  <p className="font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-tight text-[#0A0A0A]">
+                    {area.label}
                   </p>
-                  <p className="mt-1 font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.22em] text-[#0A0A0A]/55">
-                    {stat.label}
+                  <p className="mt-1 font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.18em] text-[#0A0A0A]/50">
+                    {area.sub}
                   </p>
                 </div>
               ))}

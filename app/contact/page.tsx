@@ -1,128 +1,138 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Mail, Linkedin, MapPin, Calendar } from 'lucide-react';
+import { motion, type Transition } from 'framer-motion';
+import { Mail, Linkedin, Youtube, MapPin } from 'lucide-react';
 import { ContactForm } from '@/components/ContactForm';
+import { Navbar } from '@/components/navbar';
+import { Footer } from '@/components/footer';
+
+const revealEase = [0.16, 1, 0.3, 1] as const;
+
+const contactLinks = [
+  {
+    icon: Mail,
+    label: 'Email',
+    value: 'stalanltd@gmail.com',
+    href: 'mailto:stalanltd@gmail.com',
+  },
+  {
+    icon: Linkedin,
+    label: 'LinkedIn',
+    value: 'linkedin.com/company/stalan-ltd',
+    href: 'https://www.linkedin.com/company/stalan-ltd/',
+  },
+  {
+    icon: Youtube,
+    label: 'YouTube',
+    value: '@StalanLTD',
+    href: 'https://www.youtube.com/@StalanLTD',
+  },
+  {
+    icon: MapPin,
+    label: 'Location',
+    value: 'Nigeria',
+    href: null,
+  },
+];
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#0A1628]">
-      {/* Page Hero */}
-      <section className="relative min-h-[30vh] flex items-center justify-center pt-32 pb-16 px-4">
+    <main className="min-h-screen bg-[#FAFAFA]">
+      <Navbar />
+
+      {/* Ticker */}
+      <div className="w-full overflow-hidden border-b border-black/10 bg-[#C8F135] py-2.5 pt-24">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center max-w-3xl"
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+          className="flex min-w-max items-center"
         >
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">Get in Touch</h1>
-          <p className="text-xl text-gray-300">
-            Have a project in mind or want to learn more about our products? We&apos;d love to hear from you.
-          </p>
+          {[...Array(6)].map((_, i) => (
+            <span
+              key={i}
+              className="px-5 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.26em] text-[#0A0A0A]"
+            >
+              GET IN TOUCH • CONTACT US • START A PROJECT •
+            </span>
+          ))}
         </motion.div>
-      </section>
+      </div>
 
-      {/* Contact Content */}
-      <section className="py-20 px-4 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Left Column - Contact Info */}
+      {/* Main grid */}
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid overflow-hidden border border-black/10 bg-white shadow-[0_20px_70px_rgba(10,10,10,0.06)] lg:grid-cols-[1fr_1.2fr]">
+
+          {/* Left — info */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: revealEase } satisfies Transition}
+            className="border-b border-black/10 p-8 sm:p-12 lg:border-b-0 lg:border-r"
           >
-            <div className="mb-12">
-              <h2 className="text-3xl font-bold text-white mb-2">Contact Information</h2>
-              <p className="text-gray-400">Find out how to reach us or learn more about our company.</p>
-            </div>
+            <p className="mb-4 font-['JetBrains_Mono'] text-[0.65rem] uppercase tracking-[0.28em] text-[#0A0A0A]/55">
+              STALAN L.T.D — CONTACT
+            </p>
+            <h1 className="font-['Plus_Jakarta_Sans'] text-[clamp(2.4rem,6vw,5rem)] font-black uppercase leading-[0.9] tracking-[-0.04em] text-[#0A0A0A]">
+              LET&apos;S<br />
+              <span
+                className="text-transparent"
+                style={{ WebkitTextStroke: '1.4px #0A0A0A' }}
+              >
+                BUILD
+              </span>
+              <br />
+              TOGETHER
+            </h1>
 
-            {/* Info Cards */}
-            <div className="space-y-6 mb-12">
-              {/* LinkedIn */}
-              <div className="flex items-start gap-4 p-6 rounded-lg bg-white/5 backdrop-blur border border-white/10 hover:border-[#00C2FF]/50 transition-colors">
-                <div className="flex-shrink-0">
-                  <Linkedin className="w-6 h-6 text-[#00C2FF]" />
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold mb-1">LinkedIn</h3>
-                  <a
-                    href="https://www.linkedin.com/company/stalan-ltd/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-gray-400 hover:text-[#00C2FF] transition-colors"
-                  >
-                    linkedin.com/company/stalan-ltd
-                  </a>
-                </div>
-              </div>
+            <p className="mt-7 max-w-sm text-base leading-7 text-[#0A0A0A]/65">
+              Have a project or idea? Reach out and our team will get back to you promptly.
+            </p>
 
-              {/* Founded */}
-              <div className="flex items-start gap-4 p-6 rounded-lg bg-white/5 backdrop-blur border border-white/10 hover:border-[#00C2FF]/50 transition-colors">
-                <div className="flex-shrink-0">
-                  <Calendar className="w-6 h-6 text-[#00C2FF]" />
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold mb-1">Founded</h3>
-                  <p className="text-gray-400">November 2, 2024</p>
-                </div>
-              </div>
-
-              {/* Location */}
-              <div className="flex items-start gap-4 p-6 rounded-lg bg-white/5 backdrop-blur border border-white/10 hover:border-[#00C2FF]/50 transition-colors">
-                <div className="flex-shrink-0">
-                  <MapPin className="w-6 h-6 text-[#00C2FF]" />
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold mb-1">Location</h3>
-                  <p className="text-gray-400">Nigeria</p>
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="flex items-start gap-4 p-6 rounded-lg bg-white/5 backdrop-blur border border-white/10 hover:border-[#00C2FF]/50 transition-colors">
-                <div className="flex-shrink-0">
-                  <Mail className="w-6 h-6 text-[#00C2FF]" />
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold mb-1">Email</h3>
-                  <a
-                    href="mailto:contact@stalan.ltd"
-                    className="text-gray-400 hover:text-[#00C2FF] transition-colors"
-                  >
-                    contact@stalan.ltd
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Social Media Row */}
-            <div className="pt-8 border-t border-white/10">
-              <p className="text-white font-semibold mb-4">Connect with us</p>
-              <div className="flex gap-4">
-                <a
-                  href="https://www.linkedin.com/company/stalan-ltd/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-lg bg-white/10 hover:bg-[#00C2FF]/20 border border-white/10 hover:border-[#00C2FF]/50 transition-all flex items-center justify-center text-[#00C2FF]"
+            <div className="mt-10 space-y-4">
+              {contactLinks.map(({ icon: Icon, label, value, href }) => (
+                <div
+                  key={label}
+                  className="flex items-start gap-4 border border-black/10 bg-[#FAFAFA] px-5 py-4 transition-colors hover:border-[#C8F135] hover:bg-[#C8F135]/10"
                 >
-                  <Linkedin className="w-5 h-5" />
-                </a>
-              </div>
+                  <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#0A0A0A]/70" />
+                  <div>
+                    <p className="font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.22em] text-[#0A0A0A]/50">
+                      {label}
+                    </p>
+                    {href ? (
+                      <a
+                        href={href}
+                        target={href.startsWith('mailto') ? undefined : '_blank'}
+                        rel="noopener noreferrer"
+                        className="mt-0.5 text-sm font-medium text-[#0A0A0A] underline-offset-2 hover:underline"
+                      >
+                        {value}
+                      </a>
+                    ) : (
+                      <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">{value}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </motion.div>
 
-          {/* Right Column - Contact Form */}
+          {/* Right — form */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-white rounded-2xl p-8 shadow-xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: revealEase, delay: 0.15 } satisfies Transition}
+            className="bg-[#F5F5F5] p-8 sm:p-12"
           >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h2>
+            <p className="mb-6 font-['JetBrains_Mono'] text-[0.65rem] uppercase tracking-[0.28em] text-[#0A0A0A]/55">
+              SEND A MESSAGE
+            </p>
             <ContactForm />
           </motion.div>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }

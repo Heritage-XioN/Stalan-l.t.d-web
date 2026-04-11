@@ -29,7 +29,7 @@ export function ProductShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, ease: revealEase, delay: 0.05 } satisfies Transition}
               viewport={{ once: true, amount: 0.35 }}
-              className="font-['Syne'] text-4xl font-black tracking-[-0.05em] text-[#0A0A0A] sm:text-5xl lg:text-6xl"
+              className="font-['Plus_Jakarta_Sans'] text-4xl font-black tracking-[-0.05em] text-[#0A0A0A] sm:text-5xl lg:text-6xl"
             >
               A bolder system of products, designed to work together.
             </motion.h2>
@@ -63,7 +63,7 @@ export function ProductShowcase() {
                   S.A.T BOTS
                 </span>
               </div>
-              <h3 className="font-['Syne'] text-3xl font-black tracking-[-0.04em] sm:text-4xl">
+              <h3 className="font-['Plus_Jakarta_Sans'] text-3xl font-black tracking-[-0.04em] sm:text-4xl">
                 Live Intelligence: Visual notes and live intelligence from the S.A.T Bot lab.
               </h3>
               <p className="mt-6 inline-flex items-center gap-2 font-['JetBrains_Mono'] text-xs uppercase tracking-[0.24em] text-[#C8F135]">
@@ -101,7 +101,7 @@ export function ProductShowcase() {
                     <p className="mb-2 font-['JetBrains_Mono'] text-[0.68rem] uppercase tracking-[0.28em] text-[#0A0A0A]/55">
                       {product.category}
                     </p>
-                    <h3 className="font-['Syne'] text-3xl font-black tracking-[-0.05em] text-[#0A0A0A] sm:text-4xl">
+                    <h3 className="font-['Plus_Jakarta_Sans'] text-3xl font-black tracking-[-0.05em] text-[#0A0A0A] sm:text-4xl">
                       {product.name}
                     </h3>
                     <p className="mt-4 flex-grow text-sm leading-7 text-[#0A0A0A]/72">

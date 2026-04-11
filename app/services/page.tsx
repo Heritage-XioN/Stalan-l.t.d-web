@@ -57,7 +57,7 @@ export default function ServicesPage() {
           transition={{ duration: 0.8 }}
           className="max-w-5xl text-center"
         >
-          <h1 className="font-['Syne'] text-[clamp(2.4rem,7.2vw,5.6rem)] font-black uppercase tracking-[-0.05em] text-foreground">
+          <h1 className="font-['Plus_Jakarta_Sans'] text-[clamp(2.4rem,7.2vw,5.6rem)] font-black uppercase tracking-[-0.05em] text-foreground">
             ENGINEERING SERVICES
           </h1>
           <p className="mx-auto mt-5 max-w-3xl text-lg text-foreground/70 sm:text-xl">
@@ -84,7 +84,7 @@ export default function ServicesPage() {
                 <div className={`mb-6 flex h-14 w-14 items-center justify-center border border-black/10 bg-[#FAFAFA] transition-colors dark:border-white/10 dark:bg-black/20 ${isFeatured ? 'h-16 w-16' : ''} group-hover:border-[#C8F135] group-hover:bg-[#C8F135]`}>
                   <Icon className={`${isFeatured ? 'h-8 w-8' : 'h-7 w-7'} text-[#0A0A0A] transition-colors dark:text-[#F5F5F5] group-hover:text-[#0A0A0A]`} />
                 </div>
-                <h3 className={`mb-3 font-['Syne'] font-black tracking-[-0.04em] text-[#0A0A0A] transition-colors dark:text-[#F5F5F5] group-hover:text-[#F5F5F5] dark:group-hover:text-[#0A0A0A] ${isFeatured ? 'text-4xl' : 'text-2xl'}`}>
+                <h3 className={`mb-3 font-['Plus_Jakarta_Sans'] font-black tracking-[-0.04em] text-[#0A0A0A] transition-colors dark:text-[#F5F5F5] group-hover:text-[#F5F5F5] dark:group-hover:text-[#0A0A0A] ${isFeatured ? 'text-4xl' : 'text-2xl'}`}>
                   {service.title}
                 </h3>
                 <p className={`${isFeatured ? 'max-w-3xl text-lg leading-8' : 'text-base leading-7'} text-[#0A0A0A]/72 transition-colors dark:text-[#F5F5F5]/78 group-hover:text-[#F5F5F5]/92 dark:group-hover:text-[#0A0A0A]/85`}>
@@ -99,7 +99,7 @@ export default function ServicesPage() {
       {/* Why Choose Stalan Section */}
       <section className="border-y border-black/10 bg-[#FAFAFA] px-4 py-16 text-[#0A0A0A]">
         <div className="max-w-7xl mx-auto">
-          <h2 className="mb-12 text-center font-['Syne'] text-4xl font-black tracking-[-0.04em] text-[#0A0A0A]">
+          <h2 className="mb-12 text-center font-['Plus_Jakarta_Sans'] text-4xl font-black tracking-[-0.04em] text-[#0A0A0A]">
             Why Choose Stalan?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -129,7 +129,7 @@ export default function ServicesPage() {
           viewport={{ once: true }}
           className="mx-auto max-w-4xl border border-black/10 bg-[#0A0A0A] p-12 text-center text-[#F5F5F5] dark:border-white/10 dark:bg-[#F5F5F5] dark:text-[#0A0A0A]"
         >
-          <h2 className="mb-4 font-['Syne'] text-4xl font-black tracking-[-0.04em]">Ready to work with us?</h2>
+          <h2 className="mb-4 font-['Plus_Jakarta_Sans'] text-4xl font-black tracking-[-0.04em]">Ready to work with us?</h2>
           <p className="mb-8 text-lg text-inherit/80">
             Let&apos;s discuss how our engineering expertise can transform your next project.
           </p>

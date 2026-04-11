@@ -1,6 +1,5 @@
 import { Navbar } from '@/components/navbar';
 import { HeroSection } from '@/components/HeroSection';
-import { StatsBar } from '@/components/StatsBar';
 import { ProductShowcase } from '@/components/ProductShowcase';
 import { MissionBanner } from '@/components/MissionBanner';
 import { ServicesTeaser } from '@/components/ServicesTeaser';
@@ -14,7 +13,6 @@ export default function Home() {
     <main id="main-content" className="bg-[#0A1628]">
       <Navbar />
       <HeroSection />
-      <StatsBar />
       <ProductShowcase />
       <MissionBanner />
       <ServicesTeaser />

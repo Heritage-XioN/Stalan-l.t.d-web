@@ -400,7 +400,7 @@ export default function SatBotsPage() {
           >
             <DialogContent className="border border-black/20 bg-white text-[#0A0A0A] sm:max-w-2xl">
               <DialogHeader>
-                <DialogTitle className="font-['Syne'] text-2xl font-black tracking-tight">
+                <DialogTitle className="font-['Plus_Jakarta_Sans'] text-2xl font-black tracking-tight">
                   {selectedPost ? 'Edit S.A.T Bot Post' : 'Add S.A.T Bot Post'}
                 </DialogTitle>
               </DialogHeader>
@@ -540,7 +540,7 @@ export default function SatBotsPage() {
                               <ImagePlus className="h-5 w-5" />
                             </div>
                             <div>
-                              <p className="font-['Syne'] text-lg font-bold text-[#0A0A0A]">
+                              <p className="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#0A0A0A]">
                                 Image uploaded
                               </p>
                               <p className="text-sm text-[#0A0A0A]/55">
@@ -568,7 +568,7 @@ export default function SatBotsPage() {
                         <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-black/10 bg-[#FAFAFA] text-[#0A0A0A]">
                           <Upload className="h-7 w-7" />
                         </div>
-                        <p className="font-['Syne'] text-2xl font-black tracking-tight text-[#0A0A0A]">
+                        <p className="font-['Plus_Jakarta_Sans'] text-2xl font-black tracking-tight text-[#0A0A0A]">
                           Upload a premium visual
                         </p>
                         <p className="mt-3 max-w-md text-sm leading-6 text-[#0A0A0A]/58">
@@ -583,7 +583,7 @@ export default function SatBotsPage() {
                     {isUploadingImage ? (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#FAFAFA]/92 backdrop-blur-sm">
                         <Spinner className="h-8 w-8 text-[#0A0A0A]" />
-                        <p className="font-['Syne'] text-lg font-bold text-[#0A0A0A]">
+                        <p className="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#0A0A0A]">
                           Processing image...
                         </p>
                         <p className="text-sm text-[#0A0A0A]/55">

@@ -9,7 +9,7 @@ import { CredentialsSection } from '@/components/about/CredentialsSection';
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Learn about Stalan L.T.D, our mission, vision, leadership team, and journey to advancing technology for humanity.',
+  description: 'Learn about Stalan L.T.D, our mission, vision, leadership team, and commitment to revolutionizing modern day technology.',
   openGraph: {
     title: 'About Stalan L.T.D',
     description: 'Multi-disciplinary technology firm founded to advance safe, purposeful innovation.',

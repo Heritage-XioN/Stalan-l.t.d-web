@@ -35,7 +35,7 @@ export default async function SatBotsPage() {
       <Navbar />
       <section className="border-b border-black/6 bg-[radial-gradient(circle_at_top,_rgba(200,241,53,0.24),_transparent_35%),linear-gradient(180deg,_rgba(255,255,255,0.92),_rgba(250,250,250,1))] pt-32 pb-16 sm:pt-40 sm:pb-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl font-['Syne']">
+          <div className="max-w-4xl font-['Plus_Jakarta_Sans']">
             <p className="mb-5 inline-flex rounded-full border border-black/8 bg-white px-4 py-1.5 text-sm font-bold uppercase tracking-[0.24em] text-[#0A0A0A]/60">
               S.A.T Bots
             </p>

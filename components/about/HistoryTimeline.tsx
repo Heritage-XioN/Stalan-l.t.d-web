@@ -1,127 +1,81 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Calendar, Star } from 'lucide-react';
+import { motion, type Transition } from 'framer-motion';
 
-interface TimelineEvent {
-  date: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  isFuture?: boolean;
-}
+const revealEase = [0.16, 1, 0.3, 1] as const;
 
-const events: TimelineEvent[] = [
+const events = [
   {
-    date: 'Nov 2, 2024',
-    title: 'Stalan L.T.D Founded',
-    description: 'Founded by Ogu Chidiebube Victory with a vision to advance technology for humanity.',
-    icon: <Star className="w-5 h-5" />,
+    tag: '01',
+    title: 'Company Founded',
+    body: 'Stalan L.T.D incorporated and registered with the Corporate Affairs Commission of Nigeria.',
+    status: 'done',
   },
   {
-    date: 'Apr 20, 2025',
-    title: 'Leadership Expansion',
-    description: 'Obianayo Victor Chiemerie joins as Director of Marketing (DOM).',
-    icon: <Calendar className="w-5 h-5" />,
+    tag: '02',
+    title: 'Core Products',
+    body: 'First generation SC-STATIC Channel systems and S.A.T Bot platform enter development.',
+    status: 'done',
   },
   {
-    date: 'Apr 20, 2025',
-    title: 'Operations Lead',
-    description: 'Israel-Ogiribo Gideon Oghene-Kevwe joins as Chief Operating Officer (COO).',
-    icon: <Calendar className="w-5 h-5" />,
-  },
-  {
-    date: 'Coming Soon',
+    tag: '03',
     title: 'Next Chapter',
-    description: 'More milestones and innovations on the horizon.',
-    icon: <Star className="w-5 h-5" />,
-    isFuture: true,
+    body: 'Expanding across industries -- more milestones and innovations on the horizon.',
+    status: 'upcoming',
   },
 ];
 
 export function HistoryTimeline() {
   return (
-    <section className="py-20 bg-[#0A1628] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-[#0A0A0A] py-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: revealEase } satisfies Transition}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-12"
         >
-          <h2 className="text-4xl font-bold text-white mb-4">Our Journey</h2>
-          <p className="text-gray-400 text-lg">Key milestones in Stalan&apos;s evolution</p>
+          <p className="font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.28em] text-white/30 mb-3">
+            02 -- OUR JOURNEY
+          </p>
+          <h2 className="font-['Plus_Jakarta_Sans'] text-[clamp(1.8rem,3.5vw,2.8rem)] font-black uppercase leading-[0.92] tracking-[-0.03em] text-white">
+            KEY MILESTONES
+          </h2>
         </motion.div>
-
-        {/* Timeline Container - Horizontal Scroll on Mobile, Grid on Desktop */}
-        <div className="overflow-x-auto pb-4 lg:overflow-visible">
-          <div className="flex lg:grid lg:grid-cols-4 gap-6 min-w-max lg:min-w-full">
-            {events.map((event, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="flex-shrink-0 w-72 lg:w-full"
-              >
-                <div
-                  className={`relative h-full border rounded-xl p-6 transition-all duration-300 ${
-                    event.isFuture
-                      ? 'bg-[#1a2f4f]/50 border-gray-600 hover:border-gray-500'
-                      : 'bg-[#1a2f4f] border-cyan-500/30 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/10'
-                  }`}
-                >
-                  {/* Icon & Date */}
-                  <div className="flex items-start gap-4 mb-4">
-                    <div
-                      className={`flex-shrink-0 p-2 rounded-lg ${
-                        event.isFuture
-                          ? 'bg-gray-700/50 text-gray-400'
-                          : 'bg-cyan-500/20 text-cyan-400'
-                      }`}
-                    >
-                      {event.icon}
-                    </div>
-                    <span
-                      className={`text-sm font-semibold ${
-                        event.isFuture ? 'text-gray-400' : 'text-cyan-400'
-                      }`}
-                    >
-                      {event.date}
-                    </span>
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-lg font-bold text-white mb-2">{event.title}</h3>
-
-                  {/* Description */}
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    {event.description}
-                  </p>
-
-                  {/* Future Badge */}
-                  {event.isFuture && (
-                    <div className="mt-4 pt-4 border-t border-gray-600">
-                      <span className="inline-block px-3 py-1 bg-gray-700/50 text-gray-300 text-xs font-semibold rounded-full">
-                        Upcoming
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        <div className="grid gap-px border border-white/10 sm:grid-cols-3">
+          {events.map((ev, i) => (
+            <motion.div
+              key={ev.tag}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: revealEase, delay: i * 0.1 } satisfies Transition}
+              viewport={{ once: true }}
+              className={`group p-7 sm:p-9 transition-colors ${
+                ev.status === 'upcoming'
+                  ? 'bg-white/5 hover:bg-white/8'
+                  : 'bg-[#111111] hover:bg-[#C8F135]/8'
+              }`}
+            >
+              <div className="flex items-start justify-between mb-5">
+                <span className="font-['JetBrains_Mono'] text-[0.55rem] uppercase tracking-[0.22em] text-white/25">
+                  {ev.tag}
+                </span>
+                {ev.status === 'upcoming' ? (
+                  <span className="font-['JetBrains_Mono'] text-[0.55rem] uppercase tracking-[0.18em] border border-white/15 px-2 py-0.5 text-white/30">
+                    Upcoming
+                  </span>
+                ) : (
+                  <span className="h-2 w-2 rounded-full bg-[#C8F135] mt-1" />
+                )}
+              </div>
+              <h3 className="font-['Plus_Jakarta_Sans'] text-base font-black uppercase tracking-[-0.02em] text-white group-hover:text-[#C8F135] transition-colors">
+                {ev.title}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-white/45">{ev.body}</p>
+            </motion.div>
+          ))}
         </div>
-
-        {/* Scroll hint for mobile */}
-        <motion.div
-          animate={{ x: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="flex lg:hidden justify-center mt-8 text-gray-400 text-sm"
-        >
-          ← Scroll for more →
-        </motion.div>
       </div>
     </section>
   );

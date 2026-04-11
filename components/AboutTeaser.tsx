@@ -1,75 +1,88 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type Transition } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 
-const founders = [
-  { name: 'Ogu Chidiebube Victory', title: 'Founder & CEO', initials: 'OCV' },
-  { name: 'Obianayo Victor Chiemerie', title: 'Co-Founder & DOM', initials: 'OVC' },
-  { name: 'Israel-Ogiribo Gideon', title: 'Co-Founder & COO', initials: 'IGO' },
+const revealEase = [0.16, 1, 0.3, 1] as const;
+
+const pillars = [
+  {
+    tag: '01',
+    title: 'Safety First',
+    body: 'Every system we build is engineered with electrical safety and human protection at its core.',
+  },
+  {
+    tag: '02',
+    title: 'Autonomous Innovation',
+    body: 'We develop intelligent, self-operating platforms that solve real-world logistics and mobility challenges.',
+  },
+  {
+    tag: '03',
+    title: 'Human-Centered Design',
+    body: 'Our technology is built to serve people — accessible, practical, and designed for everyday life.',
+  },
 ];
 
 export function AboutTeaser() {
   return (
-    <section className="py-20 bg-[#0A1628]">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left Column */}
+    <section className="bg-[#FAFAFA] py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid overflow-hidden border border-black/10 bg-white shadow-[0_8px_40px_rgba(10,10,10,0.05)] lg:grid-cols-[1fr_2fr]">
+
+          {/* Left — label + headline */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: revealEase } satisfies Transition}
             viewport={{ once: true }}
+            className="border-b border-black/10 p-8 sm:p-10 lg:border-b-0 lg:border-r"
           >
-            <h2 className="text-4xl font-bold text-white mb-6">Founded by Visionaries</h2>
-            <p className="text-gray-400 mb-8 leading-relaxed">
-              Stalan L.T.D was established in November 2024 by a team of passionate engineers and innovators dedicated to advancing technology that serves humanity. Our founders bring decades of combined experience in electrical engineering, logistics, and business development.
+            <p className="font-['JetBrains_Mono'] text-[0.62rem] uppercase tracking-[0.28em] text-[#0A0A0A]/50">
+              WHO WE ARE
             </p>
-            <Link href="/about">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 px-8 py-3 border-2 border-[#00C2FF] text-[#00C2FF] rounded-lg font-medium hover:bg-[#00C2FF]/10 transition-all"
+            <h2 className="mt-4 font-['Plus_Jakarta_Sans'] text-[clamp(2rem,4.5vw,3.4rem)] font-black uppercase leading-[0.92] tracking-[-0.04em] text-[#0A0A0A]">
+              BUILT FOR<br />
+              <span
+                className="text-transparent"
+                style={{ WebkitTextStroke: '1.4px #0A0A0A' }}
               >
-                Read Our Story <ArrowRight className="w-4 h-4" />
-              </motion.button>
+                IMPACT
+              </span>
+            </h2>
+            <p className="mt-6 text-sm leading-7 text-[#0A0A0A]/60">
+              Stalan L.T.D is a multi-disciplinary technology firm building next-generation systems at the intersection of safety, autonomy, and intelligence.
+            </p>
+            <Link
+              href="/about"
+              className="mt-8 inline-flex items-center gap-2 border border-black bg-[#0A0A0A] px-5 py-3 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#C8F135] hover:text-[#0A0A0A] hover:border-[#C8F135]"
+            >
+              Our Story →
             </Link>
           </motion.div>
 
-          {/* Right Column - Founders Stack */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="relative h-80 flex items-end justify-center"
-          >
-            {founders.map((founder, idx) => (
+          {/* Right — pillars */}
+          <div className="divide-y divide-black/10">
+            {pillars.map((p, i) => (
               <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
+                key={p.tag}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 + idx * 0.1 }}
+                transition={{ duration: 0.6, ease: revealEase, delay: i * 0.1 } satisfies Transition}
                 viewport={{ once: true }}
-                style={{
-                  transform: `translateX(${idx * 60 - 60}px) translateY(${idx * 20}px)`,
-                  zIndex: founders.length - idx,
-                }}
-                className="absolute"
+                className="group flex gap-6 p-7 transition-colors hover:bg-[#C8F135]/10 sm:p-9"
               >
-                <div className="w-32 rounded-lg bg-gradient-to-br from-[#1A4FBF] to-[#00C2FF] p-1">
-                  <div className="bg-[#0A1628] rounded-lg p-6 text-center">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#1A4FBF] to-[#00C2FF] flex items-center justify-center mx-auto mb-3">
-                      <span className="text-white font-bold text-lg">{founder.initials}</span>
-                    </div>
-                    <h3 className="text-white font-bold text-sm">{founder.name}</h3>
-                    <p className="text-[#00C2FF] text-xs mt-1">{founder.title}</p>
-                  </div>
+                <span className="font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-[#0A0A0A]/30 pt-1 shrink-0">
+                  {p.tag}
+                </span>
+                <div>
+                  <h3 className="font-['Plus_Jakarta_Sans'] text-lg font-black uppercase tracking-[-0.02em] text-[#0A0A0A]">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-7 text-[#0A0A0A]/60">{p.body}</p>
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
