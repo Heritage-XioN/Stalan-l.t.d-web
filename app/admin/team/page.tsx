@@ -1,121 +1,165 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { AdminSidebar } from '@/components/admin/AdminSidebar'
-import { Card, CardContent } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Trash2, Plus } from 'lucide-react'
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import { Users, Plus, Edit2, Trash2, X } from 'lucide-react';
 
 interface TeamMember {
-  id: string
-  name: string
-  role: string
-  title: string
-  linkedin?: string
+  id: string;
+  name: string;
+  role: string;
+  title: string;
+  bio: string | null;
+  imageUrl: string | null;
+  linkedin: string | null;
+  order: number;
 }
 
+const emptyForm = { name: '', role: '', title: '', bio: '', imageUrl: '', linkedin: '', order: 0 };
+
 export default function TeamPage() {
-  const [team, setTeam] = useState<TeamMember[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [members, setMembers] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<TeamMember | null>(null);
+  const [form, setForm] = useState(emptyForm);
 
-  useEffect(() => {
-    fetchTeam()
-  }, [])
+  useEffect(() => { loadMembers(); }, []);
 
-  async function fetchTeam() {
-    try {
-      const response = await fetch('/api/admin/team')
-      if (response.ok) {
-        const data = await response.json()
-        setTeam(data)
-      }
-    } catch (error) {
-      console.error('[Team] Error fetching:', error)
-    } finally {
-      setIsLoading(false)
-    }
+  async function loadMembers() {
+    setLoading(true);
+    try { const r = await fetch('/api/admin/team'); if (r.ok) setMembers(await r.json()); }
+    finally { setLoading(false); }
+  }
+
+  function openCreate() { setEditing(null); setForm(emptyForm); setOpen(true); }
+  function openEdit(m: TeamMember) {
+    setEditing(m);
+    setForm({ name: m.name, role: m.role, title: m.title, bio: m.bio ?? '', imageUrl: m.imageUrl ?? '', linkedin: m.linkedin ?? '', order: m.order });
+    setOpen(true);
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Delete this team member?')) return
+    if (!confirm('Delete this team member?')) return;
+    await fetch(`/api/admin/team/${id}`, { method: 'DELETE' });
+    setMembers((prev) => prev.filter((m) => m.id !== id));
+  }
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
     try {
-      const response = await fetch(`/api/admin/team/${id}`, {
-        method: 'DELETE'
-      })
+      const payload = { ...form, order: Number(form.order), bio: form.bio || undefined, imageUrl: form.imageUrl || undefined, linkedin: form.linkedin || undefined };
+      const res = await fetch(editing ? `/api/admin/team/${editing.id}` : '/api/admin/team', { method: editing ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      if (!res.ok) throw new Error();
+      const saved = await res.json();
+      setMembers((prev) => editing ? prev.map((x) => x.id === saved.id ? saved : x) : [...prev, saved]);
+      setOpen(false);
+    } catch { alert('Failed to save team member.'); }
+    finally { setSaving(false); }
+  }
 
-      if (response.ok) {
-        setTeam(team.filter(m => m.id !== id))
-      }
-    } catch (error) {
-      console.error('[Team] Error deleting:', error)
-    }
+  function F(key: string, label: string, placeholder: string, required = false, type = 'text') {
+    return (
+      <div key={key}>
+        <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">{label}{required ? ' *' : ''}</label>
+        <input required={required} type={type} value={(form as Record<string, unknown>)[key] as string} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className="w-full border border-black/10 px-3 py-2.5 text-sm text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none" placeholder={placeholder} />
+      </div>
+    );
   }
 
   return (
-    <div className="flex min-h-screen bg-[#FAFAFA] text-[#0A0A0A]">
-      <AdminSidebar />
-      <div className="ml-64 flex-1 p-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-[#0A0A0A]">Team Members</h1>
-            <Button className="rounded-none bg-black text-white hover:bg-[#C8F135] hover:text-black">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Member
-            </Button>
-          </div>
-
-          <Card className="border border-black/20 bg-white">
-            <CardContent className="p-0">
-              {isLoading ? (
-                <div className="text-center py-8">Loading...</div>
-              ) : team.length === 0 ? (
-                <div className="text-center py-8 text-[#0A0A0A]">No team members yet</div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-[#F5F5F5]">
-                      <TableHead className="font-bold text-black">Name</TableHead>
-                      <TableHead className="font-bold text-black">Role</TableHead>
-                      <TableHead className="font-bold text-black">Title</TableHead>
-                      <TableHead className="font-bold text-black">LinkedIn</TableHead>
-                      <TableHead className="font-bold text-black">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {team.map((member) => (
-                      <TableRow key={member.id}>
-                        <TableCell className="font-medium text-[#0A0A0A]">{member.name}</TableCell>
-                        <TableCell className="text-[#0A0A0A]">{member.role}</TableCell>
-                        <TableCell className="text-[#0A0A0A]">{member.title}</TableCell>
-                        <TableCell className="text-[#0A0A0A]">
-                          {member.linkedin ? (
-                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#0A0A0A] hover:text-[#0A0A0A] hover:underline">
-                              Profile
-                            </a>
-                          ) : (
-                            '-'
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(member.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
+    <div className="max-w-4xl space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="font-['JetBrains_Mono'] text-[0.58rem] uppercase tracking-[0.28em] text-black/30 mb-1">PEOPLE</p>
+          <h1 className="font-['Plus_Jakarta_Sans'] text-2xl font-black uppercase tracking-tight text-[#0A0A0A] md:text-3xl">Team</h1>
         </div>
+        <button onClick={openCreate} className="flex items-center gap-2 bg-[#0A0A0A] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#C8F135] hover:text-[#0A0A0A] transition-colors">
+          <Plus className="h-4 w-4" /> Add Member
+        </button>
       </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-16 text-sm text-black/35">Loading...</div>
+      ) : members.length === 0 ? (
+        <div className="flex flex-col items-center justify-center border border-dashed border-black/10 py-16 text-center">
+          <Users className="mb-3 h-8 w-8 text-black/15" />
+          <p className="text-sm font-semibold text-black/40">No team members yet</p>
+        </div>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {members.map((m) => (
+            <div key={m.id} className="border border-black/8 bg-white p-4">
+              <div className="mb-3 flex items-center gap-3">
+                {m.imageUrl ? (
+                  <div className="relative h-12 w-12 shrink-0 overflow-hidden border border-black/8">
+                    <Image src={m.imageUrl} alt={m.name} fill className="object-cover" sizes="48px" />
+                  </div>
+                ) : (
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-black/8 bg-[#C8F135]">
+                    <span className="font-['Plus_Jakarta_Sans'] text-base font-black text-[#0A0A0A]">{m.name.charAt(0).toUpperCase()}</span>
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-black text-[#0A0A0A]">{m.name}</p>
+                  <p className="truncate text-xs font-medium text-black/50">{m.title}</p>
+                </div>
+              </div>
+              <div className="mb-3 flex items-center gap-1.5">
+                <span className="border border-black/10 px-2 py-0.5 font-['JetBrains_Mono'] text-[0.5rem] uppercase tracking-wide text-black/40">{m.role}</span>
+                <span className="font-['JetBrains_Mono'] text-[0.55rem] text-black/25">#{m.order}</span>
+              </div>
+              {m.bio && <p className="line-clamp-2 text-xs text-black/40 mb-3">{m.bio}</p>}
+              <div className="flex items-center gap-1.5 border-t border-black/5 pt-3">
+                <button onClick={() => openEdit(m)} className="flex items-center gap-1.5 border border-black/8 px-3 py-1.5 text-xs font-semibold text-black/60 hover:border-[#0A0A0A] hover:text-[#0A0A0A] transition-colors">
+                  <Edit2 className="h-3 w-3" /> Edit
+                </button>
+                {m.linkedin && (
+                  <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 border border-black/8 px-3 py-1.5 text-xs font-semibold text-black/40 hover:text-[#0A0A0A] transition-colors">
+                    LinkedIn
+                  </a>
+                )}
+                <button onClick={() => handleDelete(m.id)} className="ml-auto p-1.5 text-black/25 hover:bg-red-50 hover:text-red-500 transition-colors">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-sm">
+          <div className="my-8 w-full max-w-md border border-black/8 bg-white">
+            <div className="flex items-center justify-between border-b border-black/8 px-6 py-4">
+              <h2 className="font-['Plus_Jakarta_Sans'] text-base font-black uppercase text-[#0A0A0A]">{editing ? 'Edit Member' : 'New Team Member'}</h2>
+              <button onClick={() => setOpen(false)} className="p-1 text-black/30 hover:text-black"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-4 p-6">
+              {F('name', 'Name', 'Full name', true)}
+              <div className="grid grid-cols-2 gap-3">
+                {F('role', 'Role', 'e.g. Director, Engineer', true)}
+                {F('title', 'Title', 'Job title', true)}
+              </div>
+              <div>
+                <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Bio</label>
+                <textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} rows={3} className="w-full border border-black/10 px-3 py-2.5 text-sm text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none resize-none" placeholder="Short biography..." />
+              </div>
+              {F('imageUrl', 'Photo URL', 'https://...')}
+              {F('linkedin', 'LinkedIn URL', 'https://linkedin.com/in/...')}
+              <div>
+                <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Display Order</label>
+                <input type="number" value={form.order} onChange={(e) => setForm({ ...form, order: Number(e.target.value) })} className="w-full border border-black/10 px-3 py-2.5 text-sm text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none" />
+              </div>
+              <button type="submit" disabled={saving} className="w-full bg-[#0A0A0A] py-3 font-['Plus_Jakarta_Sans'] text-sm font-black uppercase tracking-[0.06em] text-white hover:bg-[#C8F135] hover:text-[#0A0A0A] transition-colors disabled:opacity-40">
+                {saving ? 'Saving...' : editing ? 'Save Changes' : 'Add Member'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }

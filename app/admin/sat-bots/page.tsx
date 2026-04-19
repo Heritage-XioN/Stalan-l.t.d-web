@@ -1,615 +1,261 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import { useEffect, useRef, useState, type ChangeEvent, type DragEvent, type FormEvent } from 'react'
-import { AdminSidebar } from '@/components/admin/AdminSidebar'
-import { Card, CardContent } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Spinner } from '@/components/ui/spinner'
-import { Textarea } from '@/components/ui/textarea'
-import { supabase } from '@/lib/supabase'
-import { Bot, Edit2, ImagePlus, Plus, Trash2, Upload, X } from 'lucide-react'
-import type { Prisma } from '@prisma/client'
+import Image from 'next/image';
+import { useEffect, useRef, useState, type ChangeEvent, type DragEvent, type FormEvent } from 'react';
+import { Bot, Edit2, ImagePlus, Plus, Trash2, Upload, X, Eye, EyeOff } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import type { Prisma } from '@prisma/client';
 
 interface SatBotPost {
-  id: string
-  title: string
-  content: string
-  imageUrl: string | null
-  price: number | null
-  specifications: Prisma.JsonValue | null
-  published: boolean
-  createdAt: string
-  updatedAt: string
+  id: string;
+  title: string;
+  content: string;
+  imageUrl: string | null;
+  price: number | null;
+  specifications: Prisma.JsonValue | null;
+  published: boolean;
+  createdAt: string;
 }
 
-const initialFormData = {
-  title: '',
-  content: '',
-  imageUrl: '',
-  price: '',
-  specifications: [{ key: '', value: '' }]
+const emptyForm = { title: '', content: '', imageUrl: '', price: '', published: true, specifications: [{ key: '', value: '' }] };
+
+function specsFromJson(spec: Prisma.JsonValue | null | undefined): { key: string; value: string }[] {
+  if (!spec || typeof spec !== 'object' || Array.isArray(spec)) return [{ key: '', value: '' }];
+  const entries = Object.entries(spec as Record<string, unknown>)
+    .map(([k, v]) => ({ key: k, value: typeof v === 'string' ? v : String(v ?? '') }))
+    .filter((r) => r.key.trim());
+  return entries.length ? entries : [{ key: '', value: '' }];
 }
 
-function getContentPreview(content: string) {
-  if (content.length <= 120) {
-    return content
+export default function AdminSatBotsPage() {
+  const [posts, setPosts] = useState<SatBotPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [uploadErr, setUploadErr] = useState('');
+  const [editing, setEditing] = useState<SatBotPost | null>(null);
+  const [form, setForm] = useState(emptyForm);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => { loadPosts(); }, []);
+
+  async function loadPosts() {
+    setLoading(true);
+    try { const r = await fetch('/api/admin/sat-bots'); if (r.ok) setPosts(await r.json()); }
+    finally { setLoading(false); }
   }
 
-  return `${content.slice(0, 120)}...`
-}
+  function openCreate() { setEditing(null); setForm(emptyForm); setUploadErr(''); setOpen(true); }
 
-function specificationsJsonToFormRows(
-  spec: Prisma.JsonValue | null | undefined
-): Array<{ key: string; value: string }> {
-  if (spec === null || spec === undefined) {
-    return [{ key: '', value: '' }]
-  }
-
-  if (typeof spec === 'object' && !Array.isArray(spec)) {
-    const entries = Object.entries(spec as Record<string, unknown>)
-      .map(([key, value]) => {
-        if (typeof value === 'string') {
-          return { key, value }
-        }
-        if (typeof value === 'number' || typeof value === 'boolean') {
-          return { key, value: String(value) }
-        }
-        if (value === null) {
-          return { key, value: '' }
-        }
-        return { key, value: JSON.stringify(value) }
-      })
-      .filter((row) => row.key.trim() !== '')
-
-    return entries.length > 0 ? entries : [{ key: '', value: '' }]
-  }
-
-  return [{ key: '', value: '' }]
-}
-
-export default function SatBotsPage() {
-  const [posts, setPosts] = useState<SatBotPost[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
-  const [isUploadingImage, setIsUploadingImage] = useState(false)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [isDragOver, setIsDragOver] = useState(false)
-  const [uploadError, setUploadError] = useState('')
-  const [selectedPost, setSelectedPost] = useState<SatBotPost | null>(null)
-  const [formData, setFormData] = useState(initialFormData)
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
-
-  useEffect(() => {
-    fetchPosts()
-  }, [])
-
-  async function fetchPosts() {
-    try {
-      const response = await fetch('/api/admin/sat-bots')
-
-      if (response.ok) {
-        const data = await response.json()
-        setPosts(data)
-      }
-    } catch (error) {
-      console.error('[SatBots] Error fetching:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  function resetDialogState() {
-    setSelectedPost(null)
-    setFormData(initialFormData)
-    setIsDragOver(false)
-    setUploadError('')
-    setIsUploadingImage(false)
-  }
-
-  function openCreateDialog() {
-    resetDialogState()
-    setIsDialogOpen(true)
-  }
-
-  function openEditDialog(post: SatBotPost) {
-    setSelectedPost(post)
-    setUploadError('')
-    setIsDragOver(false)
-    setFormData({
-      title: post.title,
-      content: post.content,
-      imageUrl: post.imageUrl ?? '',
-      price: post.price?.toString() ?? '',
-      specifications: specificationsJsonToFormRows(post.specifications)
-    })
-    setIsDialogOpen(true)
-  }
-
-  async function uploadImage(file: File) {
-    if (!file.type.startsWith('image/')) {
-      setUploadError('Please select a valid image file.')
-      return
-    }
-
-    if (!supabase) {
-      setUploadError('Supabase is not configured. Add the public URL and anon key to continue.')
-      return
-    }
-
-    setIsUploadingImage(true)
-    setUploadError('')
-
-    try {
-      const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg'
-      const baseName = file.name
-        .replace(/\.[^/.]+$/, '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-        .slice(0, 40) || 'sat-bot'
-      const filePath = `posts/${Date.now()}-${crypto.randomUUID()}-${baseName}.${extension}`
-
-      const { error } = await supabase.storage
-        .from('sat-bots')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false,
-          contentType: file.type
-        })
-
-      if (error) {
-        throw error
-      }
-
-      const { data } = supabase.storage.from('sat-bots').getPublicUrl(filePath)
-
-      setFormData((current) => ({
-        ...current,
-        imageUrl: data.publicUrl
-      }))
-    } catch (error) {
-      console.error('[SatBots] Error uploading image:', error)
-      setUploadError('Image upload failed. Please verify the sat-bots bucket and try again.')
-    } finally {
-      setIsUploadingImage(false)
-    }
-  }
-
-  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-
-    if (file) {
-      void uploadImage(file)
-    }
-
-    event.target.value = ''
-  }
-
-  function handleDragOver(event: DragEvent<HTMLDivElement>) {
-    event.preventDefault()
-    setIsDragOver(true)
-  }
-
-  function handleDragLeave(event: DragEvent<HTMLDivElement>) {
-    event.preventDefault()
-    setIsDragOver(false)
-  }
-
-  function handleDrop(event: DragEvent<HTMLDivElement>) {
-    event.preventDefault()
-    setIsDragOver(false)
-
-    const file = event.dataTransfer.files?.[0]
-
-    if (file) {
-      void uploadImage(file)
-    }
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    if (isUploadingImage) {
-      return
-    }
-
-    setIsSaving(true)
-
-    const priceTrimmed = formData.price.trim()
-    const priceParsed =
-      priceTrimmed === '' ? null : parseFloat(priceTrimmed)
-    const pricePayload =
-      priceTrimmed === '' || Number.isNaN(priceParsed) ? null : priceParsed
-
-    const payload = {
-      title: formData.title,
-      content: formData.content,
-      imageUrl: formData.imageUrl,
-      price: pricePayload,
-      specifications: formData.specifications.reduce<Record<string, string>>((acc, spec) => {
-        const key = spec.key.trim()
-        const value = spec.value.trim()
-        if (key && value) {
-          acc[key] = value
-        }
-        return acc
-      }, {})
-    }
-
-    try {
-      const response = await fetch(
-        selectedPost ? `/api/admin/sat-bots/${selectedPost.id}` : '/api/admin/sat-bots',
-        {
-          method: selectedPost ? 'PATCH' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error('Failed to save post')
-      }
-
-      const savedPost = await response.json()
-
-      setPosts((currentPosts) => {
-        if (selectedPost) {
-          return currentPosts.map((post) =>
-            post.id === savedPost.id ? savedPost : post
-          )
-        }
-
-        return [savedPost, ...currentPosts]
-      })
-
-      setIsDialogOpen(false)
-      resetDialogState()
-    } catch (error) {
-      console.error('[SatBots] Error saving:', error)
-    } finally {
-      setIsSaving(false)
-    }
+  function openEdit(post: SatBotPost) {
+    setEditing(post);
+    setForm({ title: post.title, content: post.content, imageUrl: post.imageUrl ?? '', price: post.price?.toString() ?? '', published: post.published, specifications: specsFromJson(post.specifications) });
+    setUploadErr('');
+    setOpen(true);
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Delete this S.A.T Bot post?')) return
+    if (!confirm('Delete this S.A.T Bot post? This cannot be undone.')) return;
+    await fetch(`/api/admin/sat-bots/${id}`, { method: 'DELETE' });
+    setPosts((p) => p.filter((x) => x.id !== id));
+  }
 
+  async function togglePublish(post: SatBotPost) {
+    const res = await fetch(`/api/admin/sat-bots/${post.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ published: !post.published }) });
+    if (res.ok) { const updated = await res.json(); setPosts((p) => p.map((x) => x.id === updated.id ? updated : x)); }
+  }
+
+  async function uploadImage(file: File) {
+    if (!file.type.startsWith('image/')) { setUploadErr('Please select a valid image file.'); return; }
+    if (!supabase) { setUploadErr('Supabase not configured.'); return; }
+    setUploading(true); setUploadErr('');
     try {
-      const response = await fetch(`/api/admin/sat-bots/${id}`, {
-        method: 'DELETE'
-      })
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const base = file.name.replace(/\.[^/.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40) || 'sat-bot';
+      const path = `posts/${Date.now()}-${crypto.randomUUID()}-${base}.${ext}`;
+      const { error } = await supabase.storage.from('sat-bots').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+      if (error) throw error;
+      const { data } = supabase.storage.from('sat-bots').getPublicUrl(path);
+      setForm((f) => ({ ...f, imageUrl: data.publicUrl }));
+    } catch { setUploadErr('Upload failed. Check the sat-bots bucket and try again.'); }
+    finally { setUploading(false); }
+  }
 
-      if (response.ok) {
-        setPosts((currentPosts) => currentPosts.filter((post) => post.id !== id))
-      }
-    } catch (error) {
-      console.error('[SatBots] Error deleting:', error)
-    }
+  function onFile(e: ChangeEvent<HTMLInputElement>) { const f = e.target.files?.[0]; if (f) uploadImage(f); e.target.value = ''; }
+  function onDragOver(e: DragEvent<HTMLDivElement>) { e.preventDefault(); setDragOver(true); }
+  function onDragLeave(e: DragEvent<HTMLDivElement>) { e.preventDefault(); setDragOver(false); }
+  function onDrop(e: DragEvent<HTMLDivElement>) { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files?.[0]; if (f) uploadImage(f); }
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (uploading) return;
+    setSaving(true);
+    const price = form.price.trim() === '' ? null : parseFloat(form.price.trim());
+    const specs = form.specifications.reduce<Record<string, string>>((acc, s) => { if (s.key.trim() && s.value.trim()) acc[s.key.trim()] = s.value.trim(); return acc; }, {});
+    const payload = { title: form.title, content: form.content, imageUrl: form.imageUrl || undefined, price: Number.isNaN(price) ? null : price, specifications: specs, published: form.published };
+    try {
+      const res = await fetch(editing ? `/api/admin/sat-bots/${editing.id}` : '/api/admin/sat-bots', { method: editing ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      if (!res.ok) throw new Error();
+      const saved = await res.json();
+      setPosts((p) => editing ? p.map((x) => x.id === saved.id ? saved : x) : [saved, ...p]);
+      setOpen(false);
+    } catch { alert('Failed to save. Please try again.'); }
+    finally { setSaving(false); }
   }
 
   return (
-    <div className="flex min-h-screen bg-[#FAFAFA] text-[#0A0A0A]">
-      <AdminSidebar />
-      <div className="ml-64 flex-1 p-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-[#0A0A0A]">S.A.T Bots</h1>
-              <p className="mt-2 text-sm text-[#0A0A0A]/70">Manage trading bot updates, images, and text posts.</p>
+    <div className="max-w-6xl space-y-6">
+      {/* Header */}
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="font-['JetBrains_Mono'] text-[0.58rem] uppercase tracking-[0.28em] text-black/30 mb-1">CONTENT</p>
+          <h1 className="font-['Plus_Jakarta_Sans'] text-2xl font-black uppercase tracking-tight text-[#0A0A0A] md:text-3xl">S.A.T Bots</h1>
+        </div>
+        <button onClick={openCreate} className="flex items-center gap-2 bg-[#0A0A0A] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#C8F135] hover:text-[#0A0A0A] transition-colors">
+          <Plus className="h-4 w-4" /> New Post
+        </button>
+      </div>
+
+      {/* Posts grid */}
+      {loading ? (
+        <div className="flex items-center justify-center py-20 text-sm text-black/35">Loading...</div>
+      ) : posts.length === 0 ? (
+        <div className="flex flex-col items-center justify-center border border-dashed border-black/10 py-20 text-center">
+          <Bot className="mb-3 h-10 w-10 text-black/15" />
+          <p className="font-semibold text-black/40">No posts yet</p>
+          <p className="mt-1 text-sm text-black/25">Create your first S.A.T Bot post</p>
+        </div>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <div key={post.id} className="group border border-black/8 bg-white">
+              {post.imageUrl ? (
+                <div className="relative aspect-video overflow-hidden bg-black/5">
+                  <Image src={post.imageUrl} alt={post.title} fill className="object-cover transition-transform group-hover:scale-105" sizes="400px" />
+                </div>
+              ) : (
+                <div className="flex aspect-video items-center justify-center bg-black/[0.03]">
+                  <Bot className="h-8 w-8 text-black/10" />
+                </div>
+              )}
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="font-['Plus_Jakarta_Sans'] text-sm font-black leading-tight text-[#0A0A0A]">{post.title}</h3>
+                  <span className={`shrink-0 px-2 py-0.5 font-['JetBrains_Mono'] text-[0.52rem] uppercase tracking-wide ${post.published ? 'bg-[#C8F135] text-[#0A0A0A]' : 'border border-black/10 text-black/35'}`}>
+                    {post.published ? 'Live' : 'Draft'}
+                  </span>
+                </div>
+                <p className="line-clamp-2 text-xs text-black/45 mb-3">{post.content}</p>
+                {post.price !== null && <p className="font-['JetBrains_Mono'] text-xs font-bold text-[#0A0A0A] mb-3">${post.price}</p>}
+                <div className="flex items-center gap-1.5 border-t border-black/5 pt-3">
+                  <button onClick={() => openEdit(post)} className="flex items-center gap-1.5 border border-black/8 px-3 py-1.5 text-xs font-semibold text-black/60 hover:border-[#0A0A0A] hover:text-[#0A0A0A] transition-colors">
+                    <Edit2 className="h-3 w-3" /> Edit
+                  </button>
+                  <button onClick={() => togglePublish(post)} className="flex items-center gap-1.5 border border-black/8 px-3 py-1.5 text-xs font-semibold text-black/60 hover:border-[#0A0A0A] hover:text-[#0A0A0A] transition-colors">
+                    {post.published ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                    {post.published ? 'Unpublish' : 'Publish'}
+                  </button>
+                  <button onClick={() => handleDelete(post.id)} className="ml-auto p-1.5 text-black/25 hover:bg-red-50 hover:text-red-500 transition-colors">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
             </div>
-            <Button
-              onClick={openCreateDialog}
-              className="rounded-none bg-black text-white hover:bg-[#C8F135] hover:text-black"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Post
-            </Button>
-          </div>
+          ))}
+        </div>
+      )}
 
-          {isLoading ? (
-            <div className="py-8 text-center">Loading...</div>
-          ) : posts.length === 0 ? (
-            <Card className="border border-black/20 bg-white">
-              <CardContent className="flex flex-col items-center justify-center py-12 text-center text-[#0A0A0A]/70">
-                <Bot className="mb-4 h-10 w-10 text-[#0A0A0A]/45" />
-                <p className="text-base font-medium text-[#0A0A0A]">No S.A.T Bot posts yet</p>
-                <p className="mt-2 text-sm text-[#0A0A0A]/70">Create the first update to start publishing trading bot content.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="border border-black/20 bg-white">
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-[#F5F5F5]">
-                      <TableHead className="font-bold text-black">Title</TableHead>
-                      <TableHead className="font-bold text-black">Content</TableHead>
-                      <TableHead className="font-bold text-black">Image</TableHead>
-                      <TableHead className="font-bold text-black">Status</TableHead>
-                      <TableHead className="font-bold text-black">Created</TableHead>
-                      <TableHead className="font-bold text-black">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {posts.map((post) => (
-                      <TableRow key={post.id}>
-                        <TableCell className="font-medium text-[#0A0A0A]">{post.title}</TableCell>
-                        <TableCell className="max-w-md text-sm text-[#0A0A0A]">
-                          {getContentPreview(post.content)}
-                        </TableCell>
-                        <TableCell>
-                          {post.imageUrl ? (
-                            <a
-                              href={post.imageUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-sm text-[#0A0A0A] hover:text-[#0A0A0A] hover:underline"
-                            >
-                              View image
-                            </a>
-                          ) : (
-                            <span className="text-sm text-[#0A0A0A]/60">No image</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={post.published ? 'default' : 'outline'}>
-                            {post.published ? 'Published' : 'Draft'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-[#0A0A0A]">
-                          {new Date(post.createdAt).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => openEditDialog(post)}
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(post.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          )}
+      {/* Modal */}
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-sm">
+          <div className="my-8 w-full max-w-2xl border border-black/8 bg-white">
+            <div className="flex items-center justify-between border-b border-black/8 px-6 py-4">
+              <h2 className="font-['Plus_Jakarta_Sans'] text-lg font-black uppercase text-[#0A0A0A]">
+                {editing ? 'Edit Post' : 'New S.A.T Bot Post'}
+              </h2>
+              <button onClick={() => setOpen(false)} className="p-1.5 text-black/30 hover:text-black"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-5 p-6">
+              <div>
+                <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Title *</label>
+                <input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full border border-black/10 px-3 py-2.5 text-sm text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none" placeholder="Post title" />
+              </div>
+              <div>
+                <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Content *</label>
+                <textarea required value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={5} className="w-full border border-black/10 px-3 py-2.5 text-sm text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none resize-none" placeholder="Post content..." />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Price (USD)</label>
+                  <input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full border border-black/10 px-3 py-2.5 text-sm text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none" placeholder="e.g. 299" />
+                </div>
+                <div className="flex flex-col justify-end">
+                  <label className="flex cursor-pointer items-center gap-2.5 select-none">
+                    <div onClick={() => setForm({ ...form, published: !form.published })} className={`relative h-5 w-9 rounded-full transition-colors ${form.published ? 'bg-[#C8F135]' : 'bg-black/15'}`}>
+                      <div className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${form.published ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                    </div>
+                    <span className="font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.18em] text-black/50">
+                      {form.published ? 'Published' : 'Draft'}
+                    </span>
+                  </label>
+                </div>
+              </div>
 
-          <Dialog
-            open={isDialogOpen}
-            onOpenChange={(open) => {
-              setIsDialogOpen(open)
-
-              if (!open) {
-                resetDialogState()
-              }
-            }}
-          >
-            <DialogContent className="border border-black/20 bg-white text-[#0A0A0A] sm:max-w-2xl">
-              <DialogHeader>
-                <DialogTitle className="font-['Plus_Jakarta_Sans'] text-2xl font-black tracking-tight">
-                  {selectedPost ? 'Edit S.A.T Bot Post' : 'Add S.A.T Bot Post'}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="max-h-[80vh] overflow-y-auto pr-6">
-                <form onSubmit={handleSubmit} className="space-y-5 pb-2">
-                <Input
-                  placeholder="Title"
-                  value={formData.title}
-                  onChange={(event) =>
-                    setFormData({ ...formData, title: event.target.value })
-                  }
-                  required
-                  className="bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
-                />
-                <Textarea
-                  placeholder="Content"
-                  value={formData.content}
-                  onChange={(event) =>
-                    setFormData({ ...formData, content: event.target.value })
-                  }
-                  required
-                  className="min-h-32 bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
-                />
-                <Input
-                  placeholder="Price (USD)"
-                  value={formData.price}
-                  onChange={(event) =>
-                    setFormData({ ...formData, price: event.target.value })
-                  }
-                  className="bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
-                />
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-[#0A0A0A]">Specifications</p>
-                    <Button
-                      type="button"
-                      onClick={() =>
-                        setFormData((current) => ({
-                          ...current,
-                          specifications: [...current.specifications, { key: '', value: '' }]
-                        }))
-                      }
-                      className="rounded-none border-2 border-black bg-white px-3 py-1.5 text-xs font-semibold text-black hover:bg-[#F5F5F5]"
-                    >
-                      Add Spec
-                    </Button>
-                  </div>
-                  {formData.specifications.map((spec, index) => (
-                    <div key={`spec-${index}`} className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_1fr_auto]">
-                      <Input
-                        placeholder="Key (e.g. Accuracy)"
-                        value={spec.key}
-                        onChange={(event) =>
-                          setFormData((current) => ({
-                            ...current,
-                            specifications: current.specifications.map((item, idx) =>
-                              idx === index ? { ...item, key: event.target.value } : item
-                            )
-                          }))
-                        }
-                        className="rounded-none border-2 border-black bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
-                      />
-                      <Input
-                        placeholder="Value (e.g. 94%)"
-                        value={spec.value}
-                        onChange={(event) =>
-                          setFormData((current) => ({
-                            ...current,
-                            specifications: current.specifications.map((item, idx) =>
-                              idx === index ? { ...item, value: event.target.value } : item
-                            )
-                          }))
-                        }
-                        className="rounded-none border-2 border-black bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
-                      />
-                      <Button
-                        type="button"
-                        onClick={() =>
-                          setFormData((current) => {
-                            if (current.specifications.length === 1) {
-                              return {
-                                ...current,
-                                specifications: [{ key: '', value: '' }]
-                              }
-                            }
-                            return {
-                              ...current,
-                              specifications: current.specifications.filter((_, idx) => idx !== index)
-                            }
-                          })
-                        }
-                        className="rounded-none border-2 border-black bg-white px-3 py-2 text-xs font-semibold text-black hover:bg-[#F5F5F5]"
-                      >
-                        Remove
-                      </Button>
+              {/* Specs */}
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <label className="font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Specifications</label>
+                  <button type="button" onClick={() => setForm((f) => ({ ...f, specifications: [...f.specifications, { key: '', value: '' }] }))} className="border border-black/10 px-2 py-1 text-xs font-semibold text-black/50 hover:text-black">+ Add</button>
+                </div>
+                <div className="space-y-2">
+                  {form.specifications.map((spec, i) => (
+                    <div key={i} className="flex gap-2">
+                      <input value={spec.key} onChange={(e) => setForm((f) => ({ ...f, specifications: f.specifications.map((s, j) => j === i ? { ...s, key: e.target.value } : s) }))} placeholder="Key" className="flex-1 border border-black/10 px-2.5 py-2 text-xs text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none" />
+                      <input value={spec.value} onChange={(e) => setForm((f) => ({ ...f, specifications: f.specifications.map((s, j) => j === i ? { ...s, value: e.target.value } : s) }))} placeholder="Value" className="flex-1 border border-black/10 px-2.5 py-2 text-xs text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none" />
+                      <button type="button" onClick={() => setForm((f) => ({ ...f, specifications: f.specifications.length === 1 ? [{ key: '', value: '' }] : f.specifications.filter((_, j) => j !== i) }))} className="border border-black/10 px-2 py-2 text-xs text-black/30 hover:text-red-500"><X className="h-3 w-3" /></button>
                     </div>
                   ))}
                 </div>
-                <div className="space-y-3">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-
-                  <div
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onClick={() => {
-                      if (!isUploadingImage) {
-                        fileInputRef.current?.click()
-                      }
-                    }}
-                    className={`relative overflow-hidden rounded-[1.75rem] border-2 border-dashed bg-white p-5 transition-all duration-300 ${
-                      isDragOver
-                        ? 'border-[#C8F135] shadow-[0_0_0_4px_rgba(200,241,53,0.16)]'
-                        : 'border-black/10 hover:border-[#C8F135]'
-                    } ${isUploadingImage ? 'cursor-wait' : 'cursor-pointer'}`}
-                  >
-                    {formData.imageUrl ? (
-                      <div className="space-y-4">
-                        <div className="relative aspect-[16/10] overflow-hidden rounded-[1.25rem] bg-[#FAFAFA]">
-                          <Image
-                            src={formData.imageUrl}
-                            alt={formData.title || 'S.A.T Bot upload preview'}
-                            fill
-                            className="object-cover"
-                            sizes="(min-width: 1024px) 640px, 100vw"
-                          />
-                        </div>
-                        <div className="flex flex-wrap items-center justify-between gap-3">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#C8F135] text-[#0A0A0A]">
-                              <ImagePlus className="h-5 w-5" />
-                            </div>
-                            <div>
-                              <p className="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#0A0A0A]">
-                                Image uploaded
-                              </p>
-                              <p className="text-sm text-[#0A0A0A]/55">
-                                Drop a new file or click to replace it.
-                              </p>
-                            </div>
-                          </div>
-
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={(event) => {
-                              event.stopPropagation()
-                              setFormData((current) => ({ ...current, imageUrl: '' }))
-                            }}
-                            className="border-black/10 bg-white text-[#0A0A0A] hover:bg-[#FAFAFA]"
-                          >
-                            <X className="mr-2 h-4 w-4" />
-                            Remove
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex min-h-64 flex-col items-center justify-center px-6 py-10 text-center">
-                        <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-black/10 bg-[#FAFAFA] text-[#0A0A0A]">
-                          <Upload className="h-7 w-7" />
-                        </div>
-                        <p className="font-['Plus_Jakarta_Sans'] text-2xl font-black tracking-tight text-[#0A0A0A]">
-                          Upload a premium visual
-                        </p>
-                        <p className="mt-3 max-w-md text-sm leading-6 text-[#0A0A0A]/58">
-                          Drag and drop an image here, or click to browse. The border shifts to lime green when the file is ready to land.
-                        </p>
-                        <p className="mt-5 font-['JetBrains_Mono'] text-[0.68rem] uppercase tracking-[0.24em] text-[#0A0A0A]/42">
-                          JPG · PNG · WEBP
-                        </p>
-                      </div>
-                    )}
-
-                    {isUploadingImage ? (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#FAFAFA]/92 backdrop-blur-sm">
-                        <Spinner className="h-8 w-8 text-[#0A0A0A]" />
-                        <p className="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#0A0A0A]">
-                          Processing image...
-                        </p>
-                        <p className="text-sm text-[#0A0A0A]/55">
-                          Uploading to Supabase Storage
-                        </p>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  {uploadError ? (
-                    <p className="text-sm text-red-500">{uploadError}</p>
-                  ) : null}
-                </div>
-                <Button
-                  type="submit"
-                  disabled={isSaving || isUploadingImage}
-                  className="h-12 w-full rounded-none bg-black font-semibold text-white hover:bg-[#C8F135] hover:text-black"
-                >
-                  {isSaving ? 'Saving...' : isUploadingImage ? 'Uploading image...' : selectedPost ? 'Save Changes' : 'Create Post'}
-                </Button>
-                </form>
               </div>
-            </DialogContent>
-          </Dialog>
+
+              {/* Image upload */}
+              <div>
+                <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Image</label>
+                <input ref={fileRef} type="file" accept="image/*" onChange={onFile} className="hidden" />
+                <div onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop} onClick={() => !uploading && fileRef.current?.click()} className={`cursor-pointer border-2 border-dashed p-4 transition-all ${dragOver ? 'border-[#C8F135] bg-[#C8F135]/5' : 'border-black/10 hover:border-black/25'} ${uploading ? 'cursor-wait' : ''}`}>
+                  {form.imageUrl ? (
+                    <div className="space-y-3">
+                      <div className="relative aspect-video overflow-hidden bg-black/5">
+                        <Image src={form.imageUrl} alt="Preview" fill className="object-cover" sizes="600px" />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center bg-[#C8F135]"><ImagePlus className="h-3.5 w-3.5 text-[#0A0A0A]" /></div>
+                          <p className="text-xs font-semibold text-[#0A0A0A]">Image ready -- click to replace</p>
+                        </div>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setForm((f) => ({ ...f, imageUrl: '' })); }} className="border border-black/10 px-2 py-1 text-xs text-black/40 hover:text-red-500">Remove</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center py-6 text-center">
+                      <Upload className="mb-2 h-6 w-6 text-black/20" />
+                      <p className="text-sm font-semibold text-black/40">{uploading ? 'Uploading...' : 'Drop image or click to browse'}</p>
+                      <p className="mt-1 font-['JetBrains_Mono'] text-[0.55rem] uppercase tracking-widest text-black/20">JPG -- PNG -- WEBP</p>
+                    </div>
+                  )}
+                </div>
+                {uploadErr && <p className="mt-1.5 text-xs text-red-500">{uploadErr}</p>}
+              </div>
+
+              <button type="submit" disabled={saving || uploading} className="w-full bg-[#0A0A0A] py-3 font-['Plus_Jakarta_Sans'] text-sm font-black uppercase tracking-[0.06em] text-white hover:bg-[#C8F135] hover:text-[#0A0A0A] transition-colors disabled:opacity-40">
+                {saving ? 'Saving...' : uploading ? 'Uploading image...' : editing ? 'Save Changes' : 'Create Post'}
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
-  )
+  );
 }

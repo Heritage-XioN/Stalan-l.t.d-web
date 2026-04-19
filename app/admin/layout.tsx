@@ -1,7 +1,7 @@
-export default function AdminLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
-  return <div className="min-h-screen bg-[#FAFAFA] text-[#0A0A0A] content-visible">{children}</div>
+import { AdminShell } from '@/components/admin/AdminShell';
+
+export const dynamic = 'force-dynamic';
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return <AdminShell>{children}</AdminShell>;
 }

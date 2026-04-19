@@ -1,77 +1,95 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Lock, Eye, EyeOff } from 'lucide-react';
 
 export default function AdminLoginPage() {
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  const [password, setPassword] = useState('');
+  const [show, setShow] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError('')
-    setIsLoading(true)
-
+    e.preventDefault();
+    setError('');
+    setLoading(true);
     try {
-      const response = await fetch('/api/admin/login', {
+      const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      })
-
-      if (response.ok) {
-        router.push('/admin')
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        router.push('/admin');
       } else {
-        const data = await response.json()
-        setError(data.error || 'Invalid password')
+        const data = await res.json();
+        setError(data.error || 'Invalid password');
       }
-    } catch (error) {
-      console.error('[Login] Error:', error)
-      setError('An error occurred. Please try again.')
+    } catch {
+      setError('An error occurred. Please try again.');
     } finally {
-      setIsLoading(false)
+      setLoading(false);
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] text-[#0A0A0A] p-4">
-      <Card className="w-full max-w-md border border-black/20 bg-white shadow-xl">
-        <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl text-[#0A0A0A]">Stalan Admin</CardTitle>
-          <CardDescription className="text-[#0A0A0A]/70">Enter your password to access the admin dashboard</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-[#0A0A0A]">
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter admin password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-                className="bg-white text-[#0A0A0A] focus-visible:border-2 focus-visible:border-black focus-visible:ring-0"
-              />
-            </div>
-            {error && <div className="text-red-500 text-sm">{error}</div>}
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full rounded-none bg-black text-white hover:bg-[#C8F135] hover:text-black"
+    <div className="flex min-h-screen items-center justify-center bg-[#0A0A0A] p-4">
+      <div className="w-full max-w-sm">
+        {/* Logo mark */}
+        <div className="mb-10 text-center">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center border border-white/10 bg-white/5">
+            <Lock className="h-6 w-6 text-[#C8F135]" />
+          </div>
+          <p className="font-['Plus_Jakarta_Sans'] text-xl font-black uppercase tracking-[0.08em] text-white">
+            STALAN ADMIN
+          </p>
+          <p className="mt-1 font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.28em] text-white/30">
+            Restricted Access
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="relative">
+            <input
+              type={show ? 'text' : 'password'}
+              placeholder="Enter admin password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+              required
+              className="w-full border border-white/10 bg-white/5 px-4 py-3 pr-12 text-sm text-white placeholder:text-white/25 focus:border-[#C8F135] focus:outline-none transition-colors"
+            />
+            <button
+              type="button"
+              onClick={() => setShow(!show)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors"
+              tabIndex={-1}
             >
-              {isLoading ? 'Authenticating...' : 'Login'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+
+          {error && (
+            <p className="font-['JetBrains_Mono'] text-[0.62rem] uppercase tracking-[0.18em] text-red-400">
+              {error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading || !password}
+            className="w-full bg-[#C8F135] py-3 font-['Plus_Jakarta_Sans'] text-sm font-black uppercase tracking-[0.08em] text-[#0A0A0A] transition-all hover:bg-white disabled:opacity-40"
+          >
+            {loading ? 'Authenticating...' : 'Enter Dashboard'}
+          </button>
+        </form>
+
+        <p className="mt-8 text-center font-['JetBrains_Mono'] text-[0.55rem] uppercase tracking-[0.22em] text-white/15">
+          Stalan L.T.D -- Internal Use Only
+        </p>
+      </div>
     </div>
-  )
+  );
 }
