@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export function MissionBanner() {
   return (
-    <section className="py-24 bg-[#0A1628]">
+    <section className="py-24 bg-[#0A0A0A]">
       <div className="max-w-4xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0 }}
@@ -28,7 +28,7 @@ export function MissionBanner() {
             whileInView={{ opacity: 1, scaleX: 1 }}
             transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
             viewport={{ once: true }}
-            className="h-1 w-20 bg-gradient-to-r from-[#1A4FBF] to-[#00C2FF] mx-auto mb-8 origin-left"
+            className="h-0.5 w-16 bg-[#C8F135] mx-auto mb-8 origin-left"
           />
 
           <motion.p

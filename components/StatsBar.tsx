@@ -5,70 +5,59 @@ import { motion } from 'framer-motion';
 
 interface StatItemProps {
   label: string;
-  value: string | number;
-  isNumber?: boolean;
-  endValue?: number;
+  suffix?: string;
+  isNumber: boolean;
+  endValue: number;
 }
 
-function StatItem({ label, value, isNumber = false, endValue = 0 }: StatItemProps) {
-  const [displayValue, setDisplayValue] = useState(0);
+function StatItem({ label, suffix = '', isNumber, endValue }: StatItemProps) {
+  const [display, setDisplay] = useState(0);
 
   useEffect(() => {
     if (!isNumber) return;
-
-    let animationFrame: NodeJS.Timeout;
-    const duration = 2000;
-    const startTime = Date.now();
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      setDisplayValue(Math.floor(endValue * progress));
-
-      if (progress < 1) {
-        animationFrame = setTimeout(animate, 16);
-      }
+    let frame: NodeJS.Timeout;
+    const duration = 1800;
+    const start = Date.now();
+    const run = () => {
+      const p = Math.min((Date.now() - start) / duration, 1);
+      setDisplay(Math.floor(endValue * p));
+      if (p < 1) frame = setTimeout(run, 16);
     };
-
-    animate();
-    return () => clearTimeout(animationFrame);
+    run();
+    return () => clearTimeout(frame);
   }, [isNumber, endValue]);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
       className="text-center"
     >
-      <div className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-2">
-        {isNumber ? displayValue : value}
+      <div className="font-['Plus_Jakarta_Sans'] text-4xl sm:text-5xl font-black text-[#C8F135] mb-2">
+        {isNumber ? display : endValue}{suffix}
       </div>
-      <p className="text-gray-400 text-sm sm:text-base">{label}</p>
+      <p className="font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.22em] text-white/35">
+        {label}
+      </p>
     </motion.div>
   );
 }
 
 export function StatsBar() {
   const stats = [
-    { label: '3 Co-Founders', value: '3', isNumber: true, endValue: 3 },
-    { label: 'SC-STATIC Channels', value: '6', isNumber: true, endValue: 6 },
-    { label: 'Industries', value: '5+', isNumber: false },
+    { label: 'Co-Founders', suffix: '', isNumber: true, endValue: 3 },
+    { label: 'Service Areas', suffix: '', isNumber: true, endValue: 6 },
+    { label: 'Industries Served', suffix: '+', isNumber: true, endValue: 5 },
   ];
 
   return (
-    <section className="bg-[#0A1628] border-y border-white/10 py-12 sm:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
-            <StatItem
-              key={index}
-              label={stat.label}
-              value={stat.value}
-              isNumber={stat.isNumber}
-              endValue={stat.endValue}
-            />
+    <section className="bg-[#0A0A0A] border-y border-white/8 py-14 sm:py-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+          {stats.map((s, i) => (
+            <StatItem key={i} {...s} />
           ))}
         </div>
       </div>

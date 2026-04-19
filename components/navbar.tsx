@@ -21,6 +21,7 @@ export function Navbar() {
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'S.A.T Bot', href: '/sat-bots' },
+    { label: 'Products', href: '/products' },
     { label: 'Services', href: '/services' },
   ];
 
