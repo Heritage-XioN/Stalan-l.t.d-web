@@ -150,6 +150,33 @@ async function main() {
         order: 6,
         published: true
       }
+    }),
+    prisma.service.create({
+      data: {
+        name: 'Asset Integrity Maintenance Services',
+        description: 'Comprehensive inspection, monitoring, and maintenance programs to ensure the structural and operational integrity of assets throughout their lifecycle.',
+        iconName: 'Shield',
+        order: 7,
+        published: true
+      }
+    }),
+    prisma.service.create({
+      data: {
+        name: 'Pipeline & Process Services',
+        description: 'End-to-end pipeline engineering, installation, commissioning, and process optimization for industrial and energy infrastructure.',
+        iconName: 'Layers',
+        order: 8,
+        published: true
+      }
+    }),
+    prisma.service.create({
+      data: {
+        name: 'Inspection & Testing Services',
+        description: 'Rigorous non-destructive testing (NDT), quality assurance inspections, and compliance verification for equipment, structures, and systems.',
+        iconName: 'FlaskConical',
+        order: 9,
+        published: true
+      }
     })
   ])
 

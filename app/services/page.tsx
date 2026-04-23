@@ -37,6 +37,9 @@ const FALLBACK_SERVICES: ServiceItem[] = [
   { icon: Clipboard, title: 'Project Management & Supervision', description: 'Overseeing construction, ensuring code compliance, and managing Engineering, Procurement, and Construction (EPC) tasks.' },
   { icon: Wrench, title: 'Technical Support', description: 'Specialized knowledge in mechanical, electrical, civil, and software engineering.' },
   { icon: Code2, title: 'Software & Systems Engineering', description: 'Designing software for automation, control systems, and IT infrastructure.' },
+  { icon: Shield, title: 'Asset Integrity Maintenance Services', description: 'Comprehensive inspection, monitoring, and maintenance programs to ensure the structural and operational integrity of assets throughout their lifecycle.' },
+  { icon: Layers, title: 'Pipeline & Process Services', description: 'End-to-end pipeline engineering, installation, commissioning, and process optimization for industrial and energy infrastructure.' },
+  { icon: FlaskConical, title: 'Inspection & Testing Services', description: 'Rigorous non-destructive testing (NDT), quality assurance inspections, and compliance verification for equipment, structures, and systems.' },
 ];
 
 const highlights = [

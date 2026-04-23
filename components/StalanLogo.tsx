@@ -35,7 +35,7 @@ export function StalanLogo() {
         />
       </div>
 
-      <div className="flex flex-col leading-none">
+      <div className="flex flex-col items-start leading-none">
         <motion.span
           initial={{ opacity: 0, x: -8 }}
           animate={{ opacity: 1, x: 0 }}
@@ -47,7 +47,7 @@ export function StalanLogo() {
         {/* Subtle shimmer on the sub-label */}
         <motion.span
           initial={{ opacity: 0, x: -8 }}
-          animate={{ opacity: [0.4, 0.7, 0.4] }}
+          animate={{ opacity: [0.4, 0.7, 0.4], x: 0 }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
           className="font-['JetBrains_Mono'] text-[0.52rem] uppercase tracking-[0.28em] text-[#0A0A0A]"
         >
