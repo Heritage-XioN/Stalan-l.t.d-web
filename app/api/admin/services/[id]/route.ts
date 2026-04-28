@@ -12,6 +12,7 @@ const serviceSchema = z.object({
   name: z.string().min(2).optional(),
   description: z.string().min(10).optional(),
   iconName: z.string().optional(),
+  imageUrl: z.string().optional(),
   order: z.number().optional(),
   published: z.boolean().optional()
 })

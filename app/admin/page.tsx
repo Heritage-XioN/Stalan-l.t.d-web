@@ -8,31 +8,22 @@ async function getDashboardData() {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
   sevenDaysAgo.setHours(0, 0, 0, 0);
 
-  const [
-    totalMessages, unreadMessages,
-    totalSatBots, publishedSatBots,
-    totalProducts, publishedProducts,
-    subscriberCount,
-    weekMessages,
-    recentMessages,
-  ] = await Promise.all([
-    prisma.contactMessage.count(),
-    prisma.contactMessage.count({ where: { read: false } }),
-    prisma.satBotPost.count(),
-    prisma.satBotPost.count({ where: { published: true } }),
-    prisma.product.count(),
-    prisma.product.count({ where: { published: true } }),
-    prisma.newsletterSubscriber.count(),
-    prisma.contactMessage.findMany({
-      where: { createdAt: { gte: sevenDaysAgo } },
-      select: { createdAt: true },
-    }),
-    prisma.contactMessage.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 6,
-      select: { id: true, name: true, subject: true, read: true, createdAt: true },
-    }),
-  ]);
+  const totalMessages = await prisma.contactMessage.count();
+  const unreadMessages = await prisma.contactMessage.count({ where: { read: false } });
+  const totalSatBots = await prisma.satBotPost.count();
+  const publishedSatBots = await prisma.satBotPost.count({ where: { published: true } });
+  const totalProducts = await prisma.product.count();
+  const publishedProducts = await prisma.product.count({ where: { published: true } });
+  const subscriberCount = await prisma.newsletterSubscriber.count();
+  const weekMessages = await prisma.contactMessage.findMany({
+    where: { createdAt: { gte: sevenDaysAgo } },
+    select: { createdAt: true },
+  });
+  const recentMessages = await prisma.contactMessage.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: 6,
+    select: { id: true, name: true, subject: true, read: true, createdAt: true },
+  });
 
   const days: { day: string; date: string; count: number }[] = [];
   for (let i = 6; i >= 0; i--) {

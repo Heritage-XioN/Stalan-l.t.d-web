@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import {
   Anchor, Compass, BarChart3, Clipboard, Wrench, Code2,
   Shield, Cpu, Zap, Globe, Truck, Layers, Settings, FlaskConical,
@@ -26,6 +27,7 @@ interface ServiceItem {
   title?: string;
   name?: string;
   description: string;
+  imageUrl?: string | null;
   iconName?: string;
   icon?: ElementType;
 }
@@ -55,7 +57,7 @@ export default function ServicesPage() {
   useEffect(() => {
     fetch('/api/services')
       .then((r) => r.json())
-      .then((data: { id: string; name: string; description: string; iconName: string }[]) => {
+      .then((data: { id: string; name: string; description: string; iconName: string; imageUrl?: string | null }[]) => {
         if (Array.isArray(data) && data.length > 0) {
           setServices(data.map((s) => ({ ...s, title: s.name, icon: getIcon(s.iconName) })));
         } else {
@@ -97,7 +99,8 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:grid-rows-[repeat(3,minmax(220px,auto))]">
             {services.map((service, idx) => {
               const Icon = service.icon ?? Wrench;
-              const isFeatured = idx === 0;
+              const hasImage = Boolean(service.imageUrl);
+              const isFeatured = idx === 0 && !hasImage;
               return (
                 <motion.div
                   key={service.id ?? idx}
@@ -105,15 +108,28 @@ export default function ServicesPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: idx * 0.08 }}
                   viewport={{ once: true }}
-                  className={`${isFeatured ? 'md:col-span-2 md:row-span-2' : 'md:col-span-1 md:row-span-1'} group cursor-pointer border border-black/10 bg-white p-7 text-[#0A0A0A] transition-all duration-300 hover:border-[#C8F135] hover:bg-[#0A0A0A] hover:text-[#F5F5F5]`}
+                  className={`${isFeatured ? 'md:col-span-2 md:row-span-2' : 'md:col-span-1 md:row-span-1'} group cursor-pointer border border-black/10 bg-white p-6 text-[#0A0A0A] transition-all duration-300 hover:border-[#C8F135] hover:bg-[#0A0A0A] hover:text-[#F5F5F5]`}
                 >
-                  <div className={`mb-6 flex items-center justify-center border border-black/10 bg-[#FAFAFA] transition-colors ${isFeatured ? 'h-16 w-16' : 'h-14 w-14'} group-hover:border-[#C8F135] group-hover:bg-[#C8F135]`}>
-                    <Icon className={`${isFeatured ? 'h-8 w-8' : 'h-7 w-7'} text-[#0A0A0A] transition-colors group-hover:text-[#0A0A0A]`} />
-                  </div>
-                  <h3 className={`mb-3 font-['Plus_Jakarta_Sans'] font-black tracking-[-0.04em] text-[#0A0A0A] transition-colors group-hover:text-[#F5F5F5] ${isFeatured ? 'text-4xl' : 'text-2xl'}`}>
+                  {service.imageUrl ? (
+                    <div className={`relative mb-5 w-full overflow-hidden border border-black/10 bg-[#F2F2F2] transition-colors group-hover:border-[#C8F135] ${isFeatured ? 'h-60 md:h-72' : 'h-44'}`}>
+                      <Image
+                        src={service.imageUrl}
+                        alt={service.title ?? service.name ?? 'Service image'}
+                        fill
+                        className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                        sizes={isFeatured ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 768px) 30vw, 100vw'}
+                        unoptimized
+                      />
+                    </div>
+                  ) : (
+                    <div className={`mb-5 flex items-center justify-center border border-black/10 bg-[#FAFAFA] transition-colors ${isFeatured ? 'h-16 w-16' : 'h-14 w-14'} group-hover:border-[#C8F135] group-hover:bg-[#C8F135]`}>
+                      <Icon className={`${isFeatured ? 'h-8 w-8' : 'h-7 w-7'} text-[#0A0A0A] transition-colors group-hover:text-[#0A0A0A]`} />
+                    </div>
+                  )}
+                  <h3 className={`mb-3 font-['Plus_Jakarta_Sans'] font-black tracking-[-0.03em] text-[#0A0A0A] transition-colors group-hover:text-[#F5F5F5] ${isFeatured ? 'text-3xl md:text-4xl' : 'text-2xl'}`}>
                     {service.title ?? service.name}
                   </h3>
-                  <p className={`${isFeatured ? 'max-w-3xl text-lg leading-8' : 'text-base leading-7'} text-[#0A0A0A]/70 transition-colors group-hover:text-[#F5F5F5]/80`}>
+                  <p className={`${isFeatured ? 'max-w-3xl text-lg leading-8' : 'text-base leading-7 line-clamp-4'} text-[#0A0A0A]/70 transition-colors group-hover:text-[#F5F5F5]/80`}>
                     {service.description}
                   </p>
                 </motion.div>

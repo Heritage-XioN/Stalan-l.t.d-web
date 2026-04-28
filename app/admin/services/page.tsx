@@ -1,26 +1,33 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Wrench, Plus, Edit2, Trash2, X, Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
+import { useState, useEffect, useRef, type ChangeEvent, type DragEvent } from 'react';
+import { Wrench, Plus, Edit2, Trash2, X, Eye, EyeOff, Upload, ImagePlus } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface Service {
   id: string;
   name: string;
   description: string;
   iconName: string;
+  imageUrl: string | null;
   order: number;
   published: boolean;
 }
 
-const emptyForm = { name: '', description: '', iconName: 'Wrench', order: 0, published: true };
+const emptyForm = { name: '', description: '', iconName: 'Wrench', imageUrl: '', order: 0, published: true };
 
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [uploadErr, setUploadErr] = useState('');
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Service | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { loadServices(); }, []);
 
@@ -30,8 +37,59 @@ export default function ServicesPage() {
     finally { setLoading(false); }
   }
 
-  function openCreate() { setEditing(null); setForm(emptyForm); setOpen(true); }
-  function openEdit(s: Service) { setEditing(s); setForm({ name: s.name, description: s.description, iconName: s.iconName, order: s.order, published: s.published }); setOpen(true); }
+  function openCreate() { setEditing(null); setForm(emptyForm); setUploadErr(''); setOpen(true); }
+  function openEdit(s: Service) {
+    setEditing(s);
+    setForm({ name: s.name, description: s.description, iconName: s.iconName, imageUrl: s.imageUrl ?? '', order: s.order, published: s.published });
+    setUploadErr('');
+    setOpen(true);
+  }
+
+  async function uploadImage(file: File) {
+    if (!file.type.startsWith('image/')) { setUploadErr('Please select a valid image file.'); return; }
+    if (!supabase) { setUploadErr('Supabase not configured.'); return; }
+
+    setUploading(true);
+    setUploadErr('');
+    try {
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const base = file.name.replace(/\.[^/.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40) || 'service';
+      const path = `services/${Date.now()}-${crypto.randomUUID()}-${base}.${ext}`;
+
+      const { error } = await supabase.storage.from('sat-bots').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+      if (error) throw error;
+
+      const { data } = supabase.storage.from('sat-bots').getPublicUrl(path);
+      setForm((f) => ({ ...f, imageUrl: data.publicUrl }));
+    } catch {
+      setUploadErr('Upload failed. Check your Supabase bucket and try again.');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function onFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) uploadImage(file);
+    e.target.value = '';
+  }
+
+  function onDragOver(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setDragOver(true);
+  }
+
+  function onDragLeave(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setDragOver(false);
+  }
+
+  function onDrop(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) uploadImage(file);
+  }
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this service?')) return;
@@ -46,9 +104,10 @@ export default function ServicesPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (uploading) return;
     setSaving(true);
     try {
-      const payload = { ...form, order: Number(form.order) };
+      const payload = { ...form, imageUrl: form.imageUrl || undefined, order: Number(form.order) };
       const res = await fetch(editing ? `/api/admin/services/${editing.id}` : '/api/admin/services', { method: editing ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!res.ok) throw new Error();
       const saved = await res.json();
@@ -80,9 +139,10 @@ export default function ServicesPage() {
           </div>
         ) : (
           <>
-            <div className="hidden grid-cols-[auto_1fr_auto_auto_auto] items-center gap-4 border-b border-black/5 bg-black/[0.02] px-5 py-2.5 sm:grid">
+            <div className="hidden grid-cols-[auto_1fr_auto_auto_auto_auto] items-center gap-4 border-b border-black/5 bg-black/[0.02] px-5 py-2.5 sm:grid">
               <span className="font-['JetBrains_Mono'] text-[0.58rem] uppercase tracking-[0.2em] text-black/35">Order</span>
               <span className="font-['JetBrains_Mono'] text-[0.58rem] uppercase tracking-[0.2em] text-black/35">Name</span>
+              <span className="font-['JetBrains_Mono'] text-[0.58rem] uppercase tracking-[0.2em] text-black/35">Image</span>
               <span className="font-['JetBrains_Mono'] text-[0.58rem] uppercase tracking-[0.2em] text-black/35">Icon</span>
               <span className="font-['JetBrains_Mono'] text-[0.58rem] uppercase tracking-[0.2em] text-black/35">Status</span>
               <span />
@@ -94,6 +154,7 @@ export default function ServicesPage() {
                   <p className="text-sm font-semibold text-[#0A0A0A]">{s.name}</p>
                   <p className="truncate text-xs text-black/45">{s.description}</p>
                 </div>
+                <span className="font-['JetBrains_Mono'] text-[0.6rem] text-black/35 hidden sm:block">{s.imageUrl ? 'Yes' : 'No'}</span>
                 <span className="font-['JetBrains_Mono'] text-[0.6rem] text-black/35 hidden sm:block">{s.iconName}</span>
                 <span className={`px-2 py-0.5 font-['JetBrains_Mono'] text-[0.52rem] uppercase tracking-wide ${s.published ? 'bg-[#C8F135] text-[#0A0A0A]' : 'border border-black/10 text-black/35'}`}>
                   {s.published ? 'Live' : 'Draft'}
@@ -133,6 +194,58 @@ export default function ServicesPage() {
                   <input required={required} value={(form as Record<string, unknown>)[key] as string} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className="w-full border border-black/10 px-3 py-2.5 text-sm text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none" placeholder={placeholder} />
                 </div>
               ))}
+
+              <div>
+                <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Service Image</label>
+                <div
+                  onDragOver={onDragOver}
+                  onDragLeave={onDragLeave}
+                  onDrop={onDrop}
+                  className={`border border-dashed p-4 transition-colors ${dragOver ? 'border-[#C8F135] bg-[#C8F135]/10' : 'border-black/15 bg-black/[0.02]'}`}
+                >
+                  {form.imageUrl ? (
+                    <div className="space-y-3">
+                      <div className="relative aspect-video overflow-hidden border border-black/10 bg-black/5">
+                        <Image src={form.imageUrl} alt="Service image preview" fill className="object-cover" sizes="600px" unoptimized />
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => fileRef.current?.click()}
+                          className="flex items-center gap-1.5 border border-black/10 px-3 py-1.5 text-xs font-semibold text-black/60 hover:border-[#0A0A0A] hover:text-[#0A0A0A]"
+                        >
+                          <Upload className="h-3.5 w-3.5" /> Replace
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setForm((f) => ({ ...f, imageUrl: '' }))}
+                          className="flex items-center gap-1.5 border border-black/10 px-3 py-1.5 text-xs font-semibold text-black/50 hover:border-red-300 hover:text-red-600"
+                        >
+                          <X className="h-3.5 w-3.5" /> Remove
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => fileRef.current?.click()}
+                      className="flex w-full flex-col items-center justify-center py-6 text-center"
+                    >
+                      <ImagePlus className="h-7 w-7 text-black/25" />
+                      <p className="mt-2 text-sm font-semibold text-black/60">Drop image here or click to upload</p>
+                      <p className="mt-1 text-xs text-black/35">PNG, JPG, WEBP</p>
+                    </button>
+                  )}
+                  <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
+                </div>
+                {uploadErr && <p className="mt-2 text-xs text-red-600">{uploadErr}</p>}
+              </div>
+
+              <div>
+                <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Image URL (Optional)</label>
+                <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="w-full border border-black/10 px-3 py-2.5 text-sm text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none" placeholder="https://..." />
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Display Order</label>
@@ -147,8 +260,8 @@ export default function ServicesPage() {
                   </label>
                 </div>
               </div>
-              <button type="submit" disabled={saving} className="w-full bg-[#0A0A0A] py-3 font-['Plus_Jakarta_Sans'] text-sm font-black uppercase tracking-[0.06em] text-white hover:bg-[#C8F135] hover:text-[#0A0A0A] transition-colors disabled:opacity-40">
-                {saving ? 'Saving...' : editing ? 'Save Changes' : 'Create Service'}
+              <button type="submit" disabled={saving || uploading} className="w-full bg-[#0A0A0A] py-3 font-['Plus_Jakarta_Sans'] text-sm font-black uppercase tracking-[0.06em] text-white hover:bg-[#C8F135] hover:text-[#0A0A0A] transition-colors disabled:opacity-40">
+                {uploading ? 'Uploading Image...' : saving ? 'Saving...' : editing ? 'Save Changes' : 'Create Service'}
               </button>
             </form>
           </div>
