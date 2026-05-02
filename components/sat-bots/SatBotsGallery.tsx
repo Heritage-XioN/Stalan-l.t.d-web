@@ -71,17 +71,17 @@ declare global {
 export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
   const [emailByPostId, setEmailByPostId] = useState<Record<string, string>>({});
   const [showDownloadByPostId, setShowDownloadByPostId] = useState<Record<string, boolean>>({});
+  const [paystackReady, setPaystackReady] = useState(false);
   const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
 
   useEffect(() => {
-    if (window.PaystackPop) return;
+    if (window.PaystackPop) { setPaystackReady(true); return; }
     const script = document.createElement('script');
     script.src = 'https://js.paystack.co/v1/inline.js';
     script.async = true;
+    script.onload = () => setPaystackReady(true);
+    script.onerror = () => toast.error('Failed to load payment system. Please refresh.');
     document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
   }, []);
 
   function handleCheckout(post: SatBotPost) {
@@ -246,10 +246,11 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
               <Button
                 type="button"
                 onClick={() => handleCheckout(post)}
-                className="group/acquire flex w-full items-center justify-center gap-2 border border-black bg-[#0A0A0A] px-5 py-3 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.24em] text-white transition-colors duration-300 hover:bg-[#C8F135] hover:text-[#0A0A0A]"
+                disabled={!paystackReady}
+                className="group/acquire flex w-full items-center justify-center gap-2 border border-black bg-[#0A0A0A] px-5 py-3 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.24em] text-white transition-colors duration-300 hover:bg-[#C8F135] hover:text-[#0A0A0A] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                BUY NOW
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/acquire:-translate-y-0.5 group-hover/acquire:translate-x-0.5" />
+                {paystackReady ? 'BUY NOW' : 'LOADING...'}
+                {paystackReady && <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/acquire:-translate-y-0.5 group-hover/acquire:translate-x-0.5" />}
               </Button>
               {showDownloadByPostId[post.id] ? (
                 <a
