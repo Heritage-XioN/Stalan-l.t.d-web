@@ -13,6 +13,7 @@ const teamSchema = z.object({
   role: z.string().min(2),
   title: z.string().min(2),
   bio: z.string().optional(),
+  imageUrl: z.string().optional(),
   linkedin: z.string().optional(),
   order: z.number().optional()
 })

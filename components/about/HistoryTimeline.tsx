@@ -8,7 +8,7 @@ const events = [
   {
     tag: '01',
     title: 'Company Founded',
-    body: 'Stalan L.T.D incorporated and registered with the Corporate Affairs Commission of Nigeria.',
+    body: 'Stalan L.T.D was founded on 2nd of November, 2024.',
     status: 'done',
   },
   {

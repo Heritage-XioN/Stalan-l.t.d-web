@@ -41,7 +41,7 @@ export default function ContactPage() {
       <Navbar />
 
       {/* Ticker */}
-      <div className="w-full overflow-hidden border-b border-black/10 bg-[#C8F135] py-2.5 pt-24">
+      <div className="w-full overflow-hidden border-b border-black/10 bg-[#C8F135] py-2.5 mt-24">
         <motion.div
           animate={{ x: ['0%', '-50%'] }}
           transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}

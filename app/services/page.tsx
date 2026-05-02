@@ -71,7 +71,7 @@ export default function ServicesPage() {
     <main className="min-h-screen bg-background text-foreground">
       <Navbar />
       {/* Hero Section */}
-      <section className="flex min-h-[34vh] items-center justify-center px-4 pb-10 pt-24 sm:pb-12 sm:pt-28">
+      <section className="flex min-h-[34vh] items-center justify-center px-4 sm:px-6 lg:px-8 pb-10 pt-24 sm:pb-12 sm:pt-28">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -88,7 +88,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-20 px-4 max-w-7xl mx-auto">
+      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {services.length === 0 ? (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {[...Array(6)].map((_, i) => (
@@ -140,8 +140,8 @@ export default function ServicesPage() {
       </section>
 
       {/* Why Choose Stalan Section */}
-      <section className="border-y border-black/10 bg-[#FAFAFA] px-4 py-16 text-[#0A0A0A]">
-        <div className="max-w-7xl mx-auto">
+      <section className="border-y border-black/10 bg-[#FAFAFA] py-16 text-[#0A0A0A]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="mb-12 text-center font-['Plus_Jakarta_Sans'] text-4xl font-black tracking-[-0.04em] text-[#0A0A0A]">
             Why Choose Stalan?
           </h2>

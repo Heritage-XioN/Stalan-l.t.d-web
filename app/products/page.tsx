@@ -89,8 +89,8 @@ export default function ProductsPage() {
       <Navbar />
       <main className="min-h-screen bg-[#0A1628]">
         {/* Header Section */}
-        <section className="py-20 px-4 md:px-8 border-b border-[#1a3a5f]">
-          <div className="max-w-6xl mx-auto">
+        <section className="pt-32 pb-20 border-b border-[#1a3a5f]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -100,13 +100,6 @@ export default function ProductsPage() {
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 Our Products
               </h1>
-              <div className="mx-auto mb-6 max-w-4xl border border-black/20 bg-[#C8F135] px-5 py-4 text-left text-sm font-medium leading-relaxed text-black md:text-base">
-                Notice: Our hardware ecosystem is currently in the Research &amp; Development phase. For our active live intelligence feed, please{' '}
-                <Link href="/sat-bots" className="underline decoration-black/80 underline-offset-2 hover:opacity-80">
-                  visit the S.A.T Bots lab
-                </Link>
-                .
-              </div>
               <p className="text-lg text-[#b0bcc8] max-w-2xl mx-auto">
                 Next-generation technology built for humanity
               </p>
@@ -115,8 +108,8 @@ export default function ProductsPage() {
         </section>
 
         {/* Products Grid */}
-        <section className="py-16 px-4 md:px-8">
-          <div className="max-w-6xl mx-auto">
+        <section className="py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {products.map((product, index) => (
                 <motion.div

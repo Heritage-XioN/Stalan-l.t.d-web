@@ -77,16 +77,11 @@ export function AboutHero() {
             transition={{ duration: 0.7, ease: revealEase, delay: 0.3 } satisfies Transition}
             className="flex flex-col justify-between gap-4 bg-[#F5F5F5] p-6 sm:p-8"
           >
-            {[
-              { tag: 'DOMAIN', val: 'Technology' },
-              { tag: 'LOCATION', val: 'Nigeria' },
-              { tag: 'STATUS', val: 'CAC Certified' },
-            ].map((item) => (
-              <div key={item.tag} className="border border-black/10 bg-white px-4 py-5">
-                <p className="font-['JetBrains_Mono'] text-[0.55rem] uppercase tracking-[0.24em] text-[#0A0A0A]/40">{item.tag}</p>
-                <p className="mt-1 font-['Plus_Jakarta_Sans'] text-sm font-bold text-[#0A0A0A]">{item.val}</p>
-              </div>
-            ))}
+            <div className="border border-black/10 bg-white px-4 py-5">
+              <p className="font-['JetBrains_Mono'] text-[0.55rem] uppercase tracking-[0.24em] text-[#0A0A0A]/40">DOMAIN</p>
+              <p className="mt-1 font-['Plus_Jakarta_Sans'] text-sm font-bold text-[#0A0A0A]">Technology</p>
+            </div>
+            <p className="font-['JetBrains_Mono'] text-[0.65rem] uppercase tracking-[0.22em] text-[#0A0A0A]/50">Certified</p>
           </motion.div>
         </div>
       </div>

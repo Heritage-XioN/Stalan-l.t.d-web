@@ -13,16 +13,12 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-      {
-        url: '/stalan-logo02.png',
+        url: '/stalan-main-logo.png',
         type: 'image/png',
         sizes: '512x512',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: '/stalan-main-logo.png',
   },
   openGraph: {
     type: 'website',
@@ -32,7 +28,7 @@ export const metadata: Metadata = {
     url: 'https://stalan.ltd',
     images: [
       {
-        url: '/stalan-logo02.png',
+        url: '/stalan-main-logo.png',
         width: 512,
         height: 512,
         alt: 'Stalan L.T.D Logo',
@@ -41,7 +37,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/stalan-logo02.png'],
+    images: ['/stalan-main-logo.png'],
   },
 }
 

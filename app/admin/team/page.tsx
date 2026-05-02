@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { Users, Plus, Edit2, Trash2, X } from 'lucide-react';
+import { useState, useEffect, useRef, type ChangeEvent, type DragEvent } from 'react';
+import { Users, Plus, Edit2, Trash2, X, Upload, ImagePlus } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface TeamMember {
   id: string;
@@ -24,6 +25,10 @@ export default function TeamPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<TeamMember | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [uploading, setUploading] = useState(false);
+  const [uploadErr, setUploadErr] = useState('');
+  const [dragOver, setDragOver] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { loadMembers(); }, []);
 
@@ -33,11 +38,47 @@ export default function TeamPage() {
     finally { setLoading(false); }
   }
 
-  function openCreate() { setEditing(null); setForm(emptyForm); setOpen(true); }
+  function openCreate() { setEditing(null); setForm(emptyForm); setUploadErr(''); setOpen(true); }
   function openEdit(m: TeamMember) {
     setEditing(m);
     setForm({ name: m.name, role: m.role, title: m.title, bio: m.bio ?? '', imageUrl: m.imageUrl ?? '', linkedin: m.linkedin ?? '', order: m.order });
+    setUploadErr('');
     setOpen(true);
+  }
+
+  async function uploadImage(file: File) {
+    if (!file.type.startsWith('image/')) { setUploadErr('Please select a valid image file.'); return; }
+    if (!supabase) { setUploadErr('Supabase not configured.'); return; }
+    setUploading(true);
+    setUploadErr('');
+    try {
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const base = file.name.replace(/\.[^/.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40) || 'team';
+      const path = `team/${Date.now()}-${crypto.randomUUID()}-${base}.${ext}`;
+      const { error } = await supabase.storage.from('sat-bots').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+      if (error) throw error;
+      const { data } = supabase.storage.from('sat-bots').getPublicUrl(path);
+      setForm((f) => ({ ...f, imageUrl: data.publicUrl }));
+    } catch {
+      setUploadErr('Upload failed. Check your Supabase bucket and try again.');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function onFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) uploadImage(file);
+    e.target.value = '';
+  }
+
+  function onDragOver(e: DragEvent<HTMLDivElement>) { e.preventDefault(); setDragOver(true); }
+  function onDragLeave() { setDragOver(false); }
+  function onDrop(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) uploadImage(file);
   }
 
   async function handleDelete(id: string) {
@@ -147,7 +188,40 @@ export default function TeamPage() {
                 <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Bio</label>
                 <textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} rows={3} className="w-full border border-black/10 px-3 py-2.5 text-sm text-[#0A0A0A] focus:border-[#0A0A0A] focus:outline-none resize-none" placeholder="Short biography..." />
               </div>
-              {F('imageUrl', 'Photo URL', 'https://...')}
+              {/* Photo upload */}
+              <div>
+                <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Profile Photo</label>
+                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
+                {form.imageUrl ? (
+                  <div className="relative mb-2 flex items-center gap-3 border border-black/10 p-3">
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden border border-black/8">
+                      <Image src={form.imageUrl} alt="Preview" fill className="object-cover" sizes="56px" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs text-black/50">{form.imageUrl}</p>
+                    </div>
+                    <button type="button" onClick={() => setForm((f) => ({ ...f, imageUrl: '' }))} className="shrink-0 p-1 text-black/30 hover:text-red-500"><X className="h-4 w-4" /></button>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => fileRef.current?.click()}
+                    onDragOver={onDragOver}
+                    onDragLeave={onDragLeave}
+                    onDrop={onDrop}
+                    className={`flex cursor-pointer flex-col items-center justify-center gap-2 border-2 border-dashed py-6 transition-colors ${dragOver ? 'border-[#C8F135] bg-[#C8F135]/5' : 'border-black/10 hover:border-black/25'}`}
+                  >
+                    {uploading ? (
+                      <Upload className="h-5 w-5 animate-bounce text-black/30" />
+                    ) : (
+                      <ImagePlus className="h-5 w-5 text-black/25" />
+                    )}
+                    <p className="font-['JetBrains_Mono'] text-[0.58rem] uppercase tracking-[0.18em] text-black/35">
+                      {uploading ? 'Uploading...' : 'Click or drag to upload photo'}
+                    </p>
+                  </div>
+                )}
+                {uploadErr && <p className="mt-1.5 text-xs text-red-500">{uploadErr}</p>}
+              </div>
               {F('linkedin', 'LinkedIn URL', 'https://linkedin.com/in/...')}
               <div>
                 <label className="mb-1.5 block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.2em] text-black/40">Display Order</label>

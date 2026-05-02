@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Linkedin, Youtube, Mail, MapPin } from 'lucide-react';
+import { Linkedin, Youtube, Mail, MapPin, Phone } from 'lucide-react';
 
 const footerLinks = [
   {
@@ -52,7 +52,7 @@ export function Footer() {
             <div className="flex items-center gap-3 mb-6">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/stalan-logo02.png"
+                src="/stalan-main-logo.png"
                 alt="Stalan L.T.D"
                 style={{ height: '44px', width: 'auto', filter: 'invert(1) brightness(2)' }}
               />
@@ -71,6 +71,12 @@ export function Footer() {
             <div className="mt-6 flex items-center gap-1 text-xs text-white/35 font-['JetBrains_Mono'] tracking-widest uppercase">
               <MapPin className="h-3 w-3 shrink-0" />
               Nigeria
+            </div>
+            <div className="mt-3 flex items-center gap-1 text-xs text-white/35 font-['JetBrains_Mono'] tracking-widest">
+              <Phone className="h-3 w-3 shrink-0" />
+              <a href="tel:+2349160655652" className="hover:text-[#C8F135] transition-colors">
+                09160655652
+              </a>
             </div>
             {/* Socials */}
             <div className="mt-8 flex gap-3">

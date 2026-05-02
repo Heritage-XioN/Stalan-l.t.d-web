@@ -10,12 +10,12 @@ export function StalanLogo() {
         Wrap in a fixed-size box so the scale animation never
         pushes siblings or changes navbar height/width.
       */}
-      <div style={{ width: '67px', height: '67px', flexShrink: 0, overflow: 'visible', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: '44px', height: '44px', flexShrink: 0, overflow: 'visible', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <motion.img
-          src="/stalan-logo02.png"
+          src="/stalan-main-logo.png"
           alt="Stalan L.T.D"
-          style={{ height: '67px', width: 'auto', display: 'block', transformOrigin: 'center' }}
+          style={{ height: '44px', width: 'auto', display: 'block', transformOrigin: 'center' }}
           /* Autonomous animation: slow breathing pulse */
           animate={{
             scale: [1, 1.07, 1, 1.04, 1],
