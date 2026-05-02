@@ -1,11 +1,15 @@
 'use client';
 
+import Image from 'next/image';
+import { useState } from 'react';
 import { motion, type Transition } from 'framer-motion';
-import { Award, FileText } from 'lucide-react';
+import { Award, FileText, X, ZoomIn } from 'lucide-react';
 
 const revealEase = [0.16, 1, 0.3, 1] as const;
 
 export function CredentialsSection() {
+  const [lightbox, setLightbox] = useState(false);
+
   return (
     <section className="bg-[#FAFAFA] py-16 border-t border-black/8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -43,9 +47,32 @@ export function CredentialsSection() {
             <p className="font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.22em] text-black/30 mb-4">
               Corporate Affairs Commission -- Nigeria
             </p>
-            <p className="text-sm leading-7 text-black/55">
+            <p className="text-sm leading-7 text-black/55 mb-6">
               Stalan L.T.D is fully incorporated and registered with the Corporate Affairs Commission (CAC) of Nigeria, operating as a legally recognized entity.
             </p>
+
+            {/* Certificate thumbnail */}
+            <button
+              type="button"
+              onClick={() => setLightbox(true)}
+              className="group/cert relative w-full overflow-hidden border border-black/10 hover:border-[#C8F135] transition-colors"
+            >
+              <Image
+                src="/certificate.jpg"
+                alt="CAC Certificate — Stalan L.T.D"
+                width={600}
+                height={420}
+                className="w-full object-cover transition-transform duration-500 group-hover/cert:scale-105"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover/cert:bg-black/30">
+                <ZoomIn className="h-7 w-7 text-white opacity-0 transition-opacity group-hover/cert:opacity-100" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 bg-[#C8F135] px-3 py-1.5">
+                <p className="font-['JetBrains_Mono'] text-[0.55rem] uppercase tracking-[0.22em] text-[#0A0A0A]">
+                  CAC Certificate of Incorporation — Click to view
+                </p>
+              </div>
+            </button>
           </motion.div>
 
           <motion.div
@@ -88,6 +115,30 @@ export function CredentialsSection() {
         </motion.div>
 
       </div>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+          onClick={() => setLightbox(false)}
+        >
+          <button
+            onClick={() => setLightbox(false)}
+            className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center border border-white/20 text-white/60 hover:border-white hover:text-white transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <div className="relative max-h-[90vh] max-w-3xl w-full overflow-auto" onClick={(e) => e.stopPropagation()}>
+            <Image
+              src="/certificate.jpg"
+              alt="CAC Certificate — Stalan L.T.D"
+              width={1200}
+              height={900}
+              className="w-full object-contain"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
