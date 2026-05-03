@@ -36,10 +36,10 @@ export function LeadershipTeam() {
           className="mb-12"
         >
           <p className="font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.28em] text-black/30 mb-3">
-            03 -- LEADERSHIP
+            03 -- FOUNDERS
           </p>
           <h2 className="font-['Plus_Jakarta_Sans'] text-[clamp(1.8rem,3.5vw,2.8rem)] font-black uppercase leading-[0.92] tracking-[-0.03em] text-[#0A0A0A]">
-            THE TEAM
+            THE FOUNDERS
           </h2>
         </motion.div>
 
