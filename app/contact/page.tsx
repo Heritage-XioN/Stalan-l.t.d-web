@@ -1,7 +1,9 @@
 'use client';
 
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, type Transition } from 'framer-motion';
-import { Mail, Linkedin, Youtube, MapPin } from 'lucide-react';
+import { Mail, Linkedin, Phone, MapPin } from 'lucide-react';
 import { ContactForm } from '@/components/ContactForm';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
@@ -22,10 +24,10 @@ const contactLinks = [
     href: 'https://www.linkedin.com/company/stalan-ltd/',
   },
   {
-    icon: Youtube,
-    label: 'YouTube',
+    icon: Phone,
+    label: 'WhatsApp',
     value: '@StalanLTD',
-    href: 'https://www.youtube.com/@StalanLTD',
+    href: 'https://wa.me/2349160655652',
   },
   {
     icon: MapPin,
@@ -127,7 +129,9 @@ export default function ContactPage() {
             <p className="mb-6 font-['JetBrains_Mono'] text-[0.65rem] uppercase tracking-[0.28em] text-[#0A0A0A]/55">
               SEND A MESSAGE
             </p>
-            <ContactForm />
+            <Suspense fallback={<ContactForm />}>
+              <FormWithParams />
+            </Suspense>
           </motion.div>
         </div>
       </section>
@@ -135,4 +139,18 @@ export default function ContactPage() {
       <Footer />
     </main>
   );
+}
+
+function FormWithParams() {
+  const searchParams = useSearchParams();
+  const subject = searchParams.get('subject') ?? undefined;
+  const product = searchParams.get('product');
+  const price = searchParams.get('price');
+
+  let message: string | undefined;
+  if (product) {
+    message = `I would like to purchase: ${product}${price ? ` — Price: ₦${Number(price).toLocaleString()}` : ''}.\n\nPlease contact me to arrange payment. I am available via WhatsApp or phone.`;
+  }
+
+  return <ContactForm defaultValues={{ subject, message }} />;
 }

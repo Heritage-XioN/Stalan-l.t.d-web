@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Linkedin, Youtube, Mail, MapPin, Phone } from 'lucide-react';
+import { Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 
 const footerLinks = [
   {
@@ -29,9 +29,9 @@ const socials = [
     icon: Linkedin,
   },
   {
-    label: 'YouTube',
-    href: 'https://www.youtube.com/@StalanLTD',
-    icon: Youtube,
+    label: 'WhatsApp',
+    href: 'https://wa.me/2349160655652',
+    icon: Phone,
   },
   {
     label: 'Email',
@@ -74,8 +74,8 @@ export function Footer() {
             </div>
             <div className="mt-3 flex items-center gap-1 text-xs text-white/35 font-['JetBrains_Mono'] tracking-widest">
               <Phone className="h-3 w-3 shrink-0" />
-              <a href="tel:+2349160655652" className="hover:text-[#C8F135] transition-colors">
-                09160655652
+              <a href="https://wa.me/2349160655652" target="_blank" rel="noopener noreferrer" className="hover:text-[#C8F135] transition-colors">
+                09160655652 (WhatsApp)
               </a>
             </div>
             {/* Socials */}

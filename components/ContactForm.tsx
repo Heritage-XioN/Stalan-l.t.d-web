@@ -10,12 +10,20 @@ import { Loader2, Check, AlertCircle } from 'lucide-react';
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
+  phone: z.string().optional(),
   company: z.string().optional(),
-  subject: z.enum(['General Inquiry', 'Product Demo', 'Partnership', 'Engineering Services', 'Other']),
-  message: z.string().min(20, 'Message must be at least 20 characters'),
+  subject: z.enum(['General Inquiry', 'Product Demo', 'Partnership', 'Engineering Services', 'Purchase Order', 'Other']),
+  message: z.string().min(10, 'Message must be at least 10 characters'),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
+
+interface ContactFormProps {
+  defaultValues?: {
+    subject?: string;
+    message?: string;
+  };
+}
 
 const inputClass =
   "w-full bg-white border border-black/15 px-4 py-3 font-['JetBrains_Mono'] text-sm text-[#0A0A0A] placeholder:text-[#0A0A0A]/35 outline-none transition focus:border-[#0A0A0A] focus:ring-0";
@@ -23,10 +31,13 @@ const inputClass =
 const labelClass =
   "block font-['JetBrains_Mono'] text-[0.6rem] uppercase tracking-[0.22em] text-[#0A0A0A]/55 mb-2";
 
-export function ContactForm() {
+export function ContactForm({ defaultValues }: ContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const validSubjects = ['General Inquiry', 'Product Demo', 'Partnership', 'Engineering Services', 'Purchase Order', 'Other'] as const;
+  const defaultSubject = validSubjects.find(s => s === defaultValues?.subject) ?? 'General Inquiry';
 
   const {
     register,
@@ -35,6 +46,10 @@ export function ContactForm() {
     reset,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
+    defaultValues: {
+      subject: defaultSubject,
+      message: defaultValues?.message ?? '',
+    },
   });
 
   const onSubmit = async (data: ContactFormData) => {
@@ -94,6 +109,17 @@ export function ContactForm() {
         )}
       </div>
 
+      {/* Phone */}
+      <div>
+        <label className={labelClass}>Phone / WhatsApp</label>
+        <input
+          {...register('phone')}
+          type="tel"
+          placeholder="e.g. 09160655652"
+          className={inputClass}
+        />
+      </div>
+
       {/* Company */}
       <div>
         <label className={labelClass}>Company / Organization</label>
@@ -111,13 +137,12 @@ export function ContactForm() {
         <select
           {...register('subject')}
           className={`${inputClass} cursor-pointer`}
-          defaultValue=""
         >
-          <option value="" disabled>Select a subject</option>
           <option value="General Inquiry">General Inquiry</option>
           <option value="Product Demo">Product Demo</option>
           <option value="Partnership">Partnership</option>
           <option value="Engineering Services">Engineering Services</option>
+          <option value="Purchase Order">Purchase Order</option>
           <option value="Other">Other</option>
         </select>
         {errors.subject && (
@@ -148,7 +173,7 @@ export function ContactForm() {
         >
           <Check className="h-4 w-4 shrink-0 text-[#0A0A0A]" />
           <p className="font-['JetBrains_Mono'] text-[0.65rem] uppercase tracking-[0.18em] text-[#0A0A0A]">
-            Message sent — we&apos;ll get back to you soon.
+            Message sent Ã¢â‚¬â€ we&apos;ll get back to you soon.
           </p>
         </motion.div>
       )}

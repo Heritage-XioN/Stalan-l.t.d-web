@@ -11,9 +11,10 @@ const NOTIFICATION_EMAIL = 'stalanltd@gmail.com';
 const contactSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
+  phone: z.string().optional().nullable(),
   company: z.string().optional().nullable(),
   subject: z.string().min(2),
-  message: z.string().min(20),
+  message: z.string().min(10),
 });
 
 export async function POST(req: Request) {
@@ -28,7 +29,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const { name, email, company, subject, message } = parsed.data;
+    const { name, email, phone, company, subject, message } = parsed.data;
+
+    const fullMessage = phone
+      ? `Phone/WhatsApp: ${phone}\n\n${message}`
+      : message;
 
     const contactMessage = await prisma.contactMessage.create({
       data: {
@@ -36,7 +41,7 @@ export async function POST(req: Request) {
         email,
         company: company || null,
         subject,
-        message,
+        message: fullMessage,
       },
     });
 

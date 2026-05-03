@@ -1,13 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, type Transition } from 'framer-motion';
 import { Bot, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { toast } from 'sonner';
 
 type SatBotPost = {
   id: string;
@@ -51,86 +49,16 @@ function getSpecificationsList(specifications: unknown): Array<{ key: string; va
   }));
 }
 
-declare global {
-  interface Window {
-    PaystackPop?: {
-      setup: (options: {
-        key: string;
-        email: string;
-        amount: number;
-        currency?: string;
-        ref: string;
-        metadata?: Record<string, unknown>;
-        callback: (response: { reference: string }) => void;
-        onClose: () => void;
-      }) => { openIframe: () => void };
-    };
-  }
-}
-
 export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
-  const [emailByPostId, setEmailByPostId] = useState<Record<string, string>>({});
-  const [showDownloadByPostId, setShowDownloadByPostId] = useState<Record<string, boolean>>({});
-  const [paystackReady, setPaystackReady] = useState(false);
-  const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+  const router = useRouter();
 
-  useEffect(() => {
-    if (window.PaystackPop) { setPaystackReady(true); return; }
-    const script = document.createElement('script');
-    script.src = 'https://js.paystack.co/v1/inline.js';
-    script.async = true;
-    script.onload = () => setPaystackReady(true);
-    script.onerror = () => toast.error('Failed to load payment system. Please refresh.');
-    document.body.appendChild(script);
-  }, []);
-
-  function handleCheckout(post: SatBotPost) {
-    const numericPrice = Number(post.price);
-    const email = (emailByPostId[post.id] || '').trim();
-
-    if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
-      toast.error('This product has no valid price configured yet.');
-      return;
-    }
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error('Please enter a valid email before checkout.');
-      return;
-    }
-
-    if (!paystackPublicKey) {
-      toast.error('Paystack public key is missing. Set NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY.');
-      return;
-    }
-
-    if (!window.PaystackPop) {
-      toast.error('Paystack failed to load. Please try again.');
-      return;
-    }
-
-    const amountInKobo = Math.round(numericPrice * 100);
-    const reference = `satbot_${post.id}_${Date.now()}`;
-
-    const popup = window.PaystackPop.setup({
-      key: paystackPublicKey,
-      email,
-      amount: amountInKobo,
-      currency: 'NGN',
-      ref: reference,
-      metadata: {
-        productId: post.id,
-        productTitle: post.title,
-      },
-      callback: (response) => {
-        toast.success(`Success! Payment confirmed (${response.reference}).`);
-        setShowDownloadByPostId((current) => ({ ...current, [post.id]: true }));
-      },
-      onClose: () => {
-        toast.message('Checkout closed.');
-      },
+  function handleBuyNow(post: SatBotPost) {
+    const params = new URLSearchParams({
+      subject: 'Purchase Order',
+      product: post.title,
+      price: post.price ? String(post.price) : '',
     });
-
-    popup.openIframe();
+    router.push(`/contact?${params.toString()}`);
   }
 
   if (posts.length === 0) {
@@ -231,35 +159,14 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
             ) : null}
 
             <div className="space-y-3 pt-2">
-              <Input
-                type="email"
-                placeholder="Enter your email for checkout"
-                value={emailByPostId[post.id] ?? ''}
-                onChange={(event) =>
-                  setEmailByPostId((current) => ({
-                    ...current,
-                    [post.id]: event.target.value,
-                  }))
-                }
-                className="border-black/20 bg-white text-[#0A0A0A]"
-              />
               <Button
                 type="button"
-                onClick={() => handleCheckout(post)}
-                disabled={!paystackReady}
-                className="group/acquire flex w-full items-center justify-center gap-2 border border-black bg-[#0A0A0A] px-5 py-3 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.24em] text-white transition-colors duration-300 hover:bg-[#C8F135] hover:text-[#0A0A0A] disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => handleBuyNow(post)}
+                className="group/acquire flex w-full items-center justify-center gap-2 border border-black bg-[#0A0A0A] px-5 py-3 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.24em] text-white transition-colors duration-300 hover:bg-[#C8F135] hover:text-[#0A0A0A]"
               >
-                {paystackReady ? 'BUY NOW' : 'LOADING...'}
-                {paystackReady && <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/acquire:-translate-y-0.5 group-hover/acquire:translate-x-0.5" />}
+                BUY NOW
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/acquire:-translate-y-0.5 group-hover/acquire:translate-x-0.5" />
               </Button>
-              {showDownloadByPostId[post.id] ? (
-                <a
-                  href="/sat-bots#download-instructions"
-                  className="inline-flex w-full items-center justify-center border border-black/20 bg-white px-5 py-3 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.2em] text-[#0A0A0A] transition-colors hover:bg-[#F5F5F5]"
-                >
-                  Download Instructions
-                </a>
-              ) : null}
 
               <Dialog>
                 <DialogTrigger asChild>
