@@ -208,7 +208,7 @@ export function SatBotsGallery({ posts }: { posts: SatBotPost[] }) {
                     ) : null}
                     <Button
                       type="button"
-                      onClick={() => handleCheckout(post)}
+                      onClick={() => handleBuyNow(post)}
                       className="inline-flex w-full items-center justify-center gap-2 border border-black bg-[#0A0A0A] px-5 py-3 font-['JetBrains_Mono'] text-xs font-semibold uppercase tracking-[0.24em] text-white transition-colors duration-300 hover:bg-[#C8F135] hover:text-[#0A0A0A]"
                     >
                       Buy Now
