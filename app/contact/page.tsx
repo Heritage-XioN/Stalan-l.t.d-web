@@ -26,7 +26,7 @@ const contactLinks = [
   {
     icon: Phone,
     label: 'WhatsApp',
-    value: '@StalanLTD',
+    value: '09160655652 — Tap to chat',
     href: 'https://wa.me/2349160655652',
   },
   {
