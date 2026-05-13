@@ -10,7 +10,7 @@ const jsonLd = {
 	name: 'Stalan L.T.D',
 	url: 'https://stalanltd.com',
 	logo: 'https://stalanltd.com/logo_square_512.png',
-	image: 'https://stalanltd.com/og-image.png',
+	image: 'https://stalanltd.com/stalan-main-logo',
 	description:
 		'Stalan L.T.D is a multi-disciplinary technology firm dedicated to revolutionizing modern day technology for the development of society.',
 	contactPoint: {
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
 		url: 'https://stalanltd.com',
 		images: [
 			{
-				url: 'https://stalanltd.com/og-image.png',
+				url: 'https://stalanltd.com/stalan-main-logo',
 				width: 1200,
 				height: 630,
 				alt: 'Stalan L.T.D — Revolutionizing Modern Day Technology',
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: 'summary_large_image',
-		images: ['https://stalanltd.com/og-image.png'],
+		images: ['https://stalanltd.com/stalan-main-logo'],
 	},
 };
 
